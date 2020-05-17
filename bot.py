@@ -7,7 +7,7 @@ from discord.ext import commands
 bot = commands.Bot(command_prefix='!')
 
 DEVELOPER_ID = '711371885300023356'
-TOKEN = 'NzExMzcxODg1MzAwMDIzMzU2.XsClSg.AfACttlV6oqWXhUu46pVFnsJKBo'
+TOKEN = 'NzExMzcxODg1MzAwMDIzMzU2.XsDv8A.l5piPx0hMkHJCF3sz62JN7SFkdM'
 
 # imgフォルダに入ってる画像のパスを全部取得
 image_list = glob.glob('img/*')
