@@ -15,19 +15,25 @@ recipe_list = []
 recipe_list.append('https://www.kurashiru.com/recipes/33a876db-a731-46fb-a9bb-505b3d5d294c')
 recipe_list.append('https://www.youtube.com/watch?v=3jI-PRAZ4Y8')
 recipe_list.append('https://www.youtube.com/watch?v=m_g6jePKNTQ')
+recipe_list.append('https://www.youtube.com/watch?v=iFe-YsJ8Ts0')
 
-@bot.event
+@bot.event 
 async def on_ready():
     
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-
+    await bot.change_presence(activity=discord.Game(name="!helpでヘルプが見れるの　めんどくさいから一回で覚えろなの"))
+    
 @bot.command(name='talk')
 async def hello(ctx):
     await ctx.send("プリンも無いのに動くわけないの")
 
+@bot.command()
+async def help(ctx):
+    await ctx.send("```!talk : 喋らないの　プリンをくれたら喋ってやるの\n!miyako : ミヤコの画像を貼ってやるの\n!pudding : プリンのレシピを貼るの　作れなの```")
+    
 @bot.command()
 async def miyako(ctx):
     # image_listの中から1つ画像を選択
