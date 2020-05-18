@@ -5,6 +5,7 @@ import glob
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix='!')
+bot.remove_command('help')
 
 DEVELOPER_ID = '711371885300023356'
 TOKEN = 'NzExMzcxODg1MzAwMDIzMzU2.XsDv8A.l5piPx0hMkHJCF3sz62JN7SFkdM'
@@ -25,8 +26,6 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(activity=discord.Game(name="!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
-    
-bot.remove_command('help')
 
 @bot.command(name=help)
 async def _help(ctx):
