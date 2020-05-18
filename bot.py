@@ -28,12 +28,12 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
 
 @bot.command(name=help)
-async def _help(ctx,self):
+async def _help(ctx):
     embed=discord.Embed(title="ヘルプ", description="コマンド一覧なの これを表示するたびに1プリンなの", color=0x00ffff) 
     embed.add_field(name="!miyako", value="ミヤコの画像を表示するの かわいいの", inline=False) 
     embed.add_field(name="!talk", value="喋らないの プリンをくれたら喋っても良いの", inline=True) 
     embed.add_field(name="!pudding", value="プリンのレシピを貼るの 早く作れなの", inline=True) 
-    await self.bot.say(embed=embed)
+    await ctx.send(embed=embed)
 
 @bot.command(name='talk')
 async def hello(ctx):
