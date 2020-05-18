@@ -15,6 +15,8 @@ purin_value = 0
 
 # imgフォルダに入ってる画像のパスを全部取得
 image_list = glob.glob('img/*')
+
+# プリンレシピ一覧
 recipe_list = []
 recipe_list.append('https://www.kurashiru.com/recipes/33a876db-a731-46fb-a9bb-505b3d5d294c')
 recipe_list.append('https://www.youtube.com/watch?v=3jI-PRAZ4Y8')
@@ -59,8 +61,8 @@ async def _help(ctx):
     embed.add_field(name="!pudding", value="プリンのレシピを貼るの 早く作れなの", inline=True) 
     await ctx.send(embed=embed)
 
-@bot.command(name='talk')
-async def hello(ctx):
+@bot.command()
+async def talk(ctx):
     await ctx.send("プリンも無いのに動くわけないの")
     
 @bot.command()
@@ -77,7 +79,7 @@ async def pudding(ctx):
     
 @bot.command()
 async def omikuji(ctx):
-    omi = random.choice(omikuji_list)
+    omikuji = random.choice(omikuji_list)
     await ctx.send(omikuji)
 
 @bot.event
@@ -91,5 +93,7 @@ async def on_reaction_add(reaction,user):
         elif purin_value == 10:
             await ctx.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
             purin_value = 0
+            else:
+                pass
 
 bot.run(TOKEN)
