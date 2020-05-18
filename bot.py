@@ -76,8 +76,8 @@ async def pudding(ctx):
     
 @bot.command()
 async def omikuji(ctx):
-    omikuji = random.choice(omikuji_list)
-    await ctx.send(omikuji)
+    omi = random.choice(omikuji_list)
+    await ctx.send(omi)
 
 @bot.event
 async def on_reaction_add(reaction,user):
