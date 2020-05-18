@@ -29,10 +29,6 @@ async def on_ready():
 @bot.command(name='talk')
 async def hello(ctx):
     await ctx.send("プリンも無いのに動くわけないの")
-
-@bot.command()
-async def help(ctx):
-    await ctx.send("```!talk : 喋らないの　プリンをくれたら喋ってやるの\n!miyako : ミヤコの画像を貼ってやるの\n!pudding : プリンのレシピを貼るの　作れなの```")
     
 @bot.command()
 async def miyako(ctx):
