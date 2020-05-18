@@ -24,6 +24,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+    await bot.change_presence(activity=discord.Game(name="b!helpでヘルプが見れるよ"))
     
 @bot.command(name='talk')
 async def hello(ctx):
