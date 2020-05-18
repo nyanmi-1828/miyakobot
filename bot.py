@@ -10,9 +10,6 @@ bot.remove_command('help')
 DEVELOPER_ID = '711371885300023356'
 TOKEN = 'NzExMzcxODg1MzAwMDIzMzU2.XsDv8A.l5piPx0hMkHJCF3sz62JN7SFkdM'
 
-# purin_value宣言しとかないとバグる気がする
-purin_value = 0
-
 # imgフォルダに入ってる画像のパスを全部取得
 image_list = glob.glob('img/*')
 
