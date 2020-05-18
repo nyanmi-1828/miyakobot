@@ -4,14 +4,15 @@ import random
 import glob
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='!')
-bot.remove_command('help')
+bot = commands.Bot(command_prefix='!',help_command=None)
 
 DEVELOPER_ID = '711371885300023356'
 TOKEN = 'NzExMzcxODg1MzAwMDIzMzU2.XsDv8A.l5piPx0hMkHJCF3sz62JN7SFkdM'
 
 # imgフォルダに入ってる画像のパスを全部取得
 image_list = glob.glob('img/*')
+
+purin_value = 0
 
 # プリンレシピ一覧
 recipe_list = []
@@ -83,14 +84,16 @@ async def omikuji(ctx):
 async def on_reaction_add(reaction,user):
     print("emoji")
     print(reaction.emoji)
+    global purin_value
+    print(purin_value)
     miya_talk = random.choice(talk_list)
     if reaction.emoji == "🍮" and purin_value < 10:
         purin_value += 1
         await reaction.message.channel.send(miya_talk)
-        elif purin_value == 10:
-            await ctx.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
-            purin_value = 0
-            else:
-                pass
+    elif purin_value == 10:
+        await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
+        purin_value = 0
+    else:
+        pass
 
 bot.run(TOKEN)
