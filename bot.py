@@ -27,8 +27,8 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Game(name="!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
 
-@bot.command()
-async def help(ctx):
+@bot.command(name='help')
+async def _help(ctx,self):
     embed=discord.Embed(title="ヘルプ", description="コマンド一覧なの これを表示するたびに1プリンなの", color=0x00ffff) 
     embed.add_field(name="!miyako", value="ミヤコの画像を表示するの かわいいの", inline=False) 
     embed.add_field(name="!talk", value="喋らないの プリンをくれたら喋っても良いの", inline=True) 
