@@ -43,6 +43,7 @@ async def _help(ctx):
     embed.add_field(name="!talk", value="喋らないの プリン🍮をくれたら喋っても良いの", inline=False) 
     embed.add_field(name="!pudding", value="プリンのレシピを貼るの 早く作れなの", inline=False) 
     embed.add_field(name="!omikuji", value="オマエの運勢を占ってやるの", inline=False) 
+    embed.add_field(name="!joubutsu", value="や、やめてなの…", inline=False) 
     await ctx.send(embed=embed)
 
 @bot.command()
