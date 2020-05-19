@@ -50,6 +50,10 @@ async def talk(ctx):
     await ctx.send("プリンも無いのに動くわけないの")
 
 @bot.command()
+async def joubutsu(ctx):
+    await ctx.send("　")
+
+@bot.command()
 async def miyako(ctx):
     # image_listの中から1つ画像を選択
     img = random.choice(image_list)
