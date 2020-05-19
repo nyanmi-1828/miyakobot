@@ -7,7 +7,7 @@ from discord.ext import commands
 
 bot = commands.Bot(command_prefix='!',help_command=None)
 
-DEVELOPER_ID = os.environ['DEVELOPER_ID']
+DEVELOPER_ID = int(os.environ['DEVELOPER_ID'])
 BOT_TOKEN = os.environ['TOKEN']
 
 # imgフォルダに入ってる画像のパスを全部取得
