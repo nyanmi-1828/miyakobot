@@ -78,7 +78,7 @@ async def on_reaction_add(reaction,user):
     global purin_value
     print(purin_value)
     miya_talk = random.choice(talk_list)
-    if reaction.emoji == "🍮" and purin_value < 10:
+    if reaction.emoji == "🍮" and purin_value < 15:
         purin_value += 1
         await reaction.message.channel.send(miya_talk)
     elif purin_value == 15:
