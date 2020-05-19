@@ -51,7 +51,7 @@ async def talk(ctx):
 
 @bot.command()
 async def joubutsu(ctx):
-    await ctx.send("　")
+    await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ")
 
 @bot.command()
 async def miyako(ctx):
