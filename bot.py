@@ -2,21 +2,13 @@ import discord
 import traceback
 import random
 import glob
-<<<<<<< HEAD
 import os
-=======
->>>>>>> a62c066d3fd90d04819482bc279c42169032b17a
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix='!',help_command=None)
 
-<<<<<<< HEAD
 DEVELOPER_ID = os.environ['DEVELOPER_ID']
 BOT_TOKEN = os.environ['TOKEN']
-=======
-DEVELOPER_ID = '711371885300023356'
-TOKEN = 'NzExMzcxODg1MzAwMDIzMzU2.XsDv8A.l5piPx0hMkHJCF3sz62JN7SFkdM'
->>>>>>> a62c066d3fd90d04819482bc279c42169032b17a
 
 # imgフォルダに入ってる画像のパスを全部取得
 image_list = glob.glob('img/*')
@@ -51,47 +43,28 @@ talk_list.append("森永牛乳プリンのパッケージに描かれてるマ�
 talk_list.append("焼プリンは表面のガリガリが美味しいの～♪")
 talk_list.append("かぼちゃプリン？邪道なの…")
 
-<<<<<<< HEAD
-@bot.event
-=======
 @bot.event 
->>>>>>> a62c066d3fd90d04819482bc279c42169032b17a
 async def on_ready():
     
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-<<<<<<< HEAD
-    await bot.change_presence(activity=discord.Game(name="!helpでヘルプが見れるの　めんどくさいから一回で覚えろなの"))
-=======
     await bot.change_presence(activity=discord.Game(name="!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
->>>>>>> a62c066d3fd90d04819482bc279c42169032b17a
 
 @bot.command(name='help')
 async def _help(ctx):
     embed=discord.Embed(title="ヘルプ", description="コマンド一覧なの これを表示するたびに1プリンなの", color=0x00ffff) 
-<<<<<<< HEAD
-    embed.add_field(name="!miyako", value="ミヤコの画像を表示するの かわいいの", inline=True) 
-    embed.add_field(name="!talk", value="喋らないの プリンをくれたら喋っても良いの", inline=True) 
-    embed.add_field(name="!pudding", value="プリンのレシピを貼るの 早く作れなの", inline=True) 
-    embed.add_field(name="!omikuji", value="オマエの運勢を占ってやるの", inline=True) 
-=======
     embed.add_field(name="!miyako", value="ミヤコの画像を表示するの かわいいの", inline=False) 
     embed.add_field(name="!talk", value="喋らないの プリン🍮をくれたら喋っても良いの", inline=False) 
     embed.add_field(name="!pudding", value="プリンのレシピを貼るの 早く作れなの", inline=False) 
     embed.add_field(name="!omikuji", value="オマエの運勢を占ってやるの", inline=False) 
->>>>>>> a62c066d3fd90d04819482bc279c42169032b17a
     await ctx.send(embed=embed)
 
 @bot.command()
 async def talk(ctx):
     await ctx.send("プリンも無いのに動くわけないの")
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> a62c066d3fd90d04819482bc279c42169032b17a
 @bot.command()
 async def miyako(ctx):
     # image_listの中から1つ画像を選択
@@ -103,19 +76,11 @@ async def miyako(ctx):
 async def pudding(ctx):
     purin = random.choice(recipe_list)
     await ctx.send(purin)
-<<<<<<< HEAD
 
 @bot.command()
 async def omikuji(ctx):
     omikuji = random.choice(omikuji_list)
     await ctx.send(omikuji)
-=======
-    
-@bot.command()
-async def omikuji(ctx):
-    omi = random.choice(omikuji_list)
-    await ctx.send(omi)
->>>>>>> a62c066d3fd90d04819482bc279c42169032b17a
 
 @bot.event
 async def on_reaction_add(reaction,user):
@@ -132,12 +97,5 @@ async def on_reaction_add(reaction,user):
         purin_value = 0
     else:
         pass
-<<<<<<< HEAD
             
-
-
 bot.run(BOT_TOKEN)
-=======
-
-bot.run(TOKEN)
->>>>>>> a62c066d3fd90d04819482bc279c42169032b17a
