@@ -14,35 +14,20 @@ image_list = glob.glob('img/*')
 
 purin_value = 0
 
+# srcにデータを全て格納済み
 # プリンレシピ一覧
-recipe_list = []
-recipe_list.append('https://www.kurashiru.com/recipes/33a876db-a731-46fb-a9bb-505b3d5d294c')
-recipe_list.append('https://www.youtube.com/watch?v=3jI-PRAZ4Y8')
-recipe_list.append('https://www.youtube.com/watch?v=m_g6jePKNTQ')
-recipe_list.append('https://www.youtube.com/watch?v=iFe-YsJ8Ts0')
+with open('src/pudding_recipe.txt', mode='r', encoding='utf-8') as recipe:
+    recipe_list = recipe.read().split('\n')
 
 # おみくじ一覧
-omikuji_list = []
-omikuji_list.append("姫吉なの　プリンパーティーなの～♪")
-omikuji_list.append("大吉なの　プリンが美味しい一日になるの")
-omikuji_list.append("中吉なの　せっかくいい運勢なんだからプリンおごってなの")
-omikuji_list.append("小吉なの　プリンが食べられそうな一日なの　早くよこすの")
-omikuji_list.append("吉なの　よりよい運勢のためにミヤコにプリンをお供えするの")
-omikuji_list.append("末吉なの　いいからプリンをよこすの")
-omikuji_list.append("凶なの　ミヤコにプリンをあげないと呪われるの")
-omikuji_list.append("大凶なの　死ねなの")
+with open('src/omikuji.txt', mode='r', encoding='utf-8') as omikuji:
+    omikuji_list = omikuji.read().split('\n')
 
 # 喋る言葉一覧
-talk_list = []
-talk_list.append("ウィーン。プリンを食べたらプリンを食べるパワーがみなぎってきたの。早くよこすの")
-talk_list.append("ぱくっ。ん～♪なめらかなの～♪")
-talk_list.append("やっぱりプッチンプリンは良いの。味もコンセプトも良いの。しかも3個入りなの。ぷっち～んなの～♪")
-talk_list.append("牛乳プリンは甘過ぎなくてデザートにぴったりなの～♪主食？もちろん主食もプリンなの～♪")
-talk_list.append("森永牛乳プリンのパッケージに描かれてるマスコットキャラ、「ホモちゃん」って言うらしいの…")
-talk_list.append("焼プリンは表面のガリガリが美味しいの～♪")
-talk_list.append("かぼちゃプリン？邪道なの…")
+with open('src/talk.txt', mode='r', encoding='utf-8') as talk:
+    talk_list = talk.read().split('\n')
 
-@bot.event 
+@bot.event
 async def on_ready():
     
     print('Logged in as')
@@ -91,7 +76,7 @@ async def on_reaction_add(reaction,user):
     if reaction.emoji == "🍮" and purin_value < 10:
         purin_value += 1
         await reaction.message.channel.send(miya_talk)
-    elif purin_value == 10:
+    elif purin_value == 15:
         await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
         purin_value = 0
     else:
