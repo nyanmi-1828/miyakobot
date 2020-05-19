@@ -7,7 +7,7 @@ from discord.ext import commands
 
 bot = commands.Bot(command_prefix='!',help_command=None)
 
-# BOT_TOKEN = os.environ['TOKEN']
+BOT_TOKEN = os.environ['TOKEN']
 
 # imgフォルダに入ってる画像のパスを全部取得
 image_list = glob.glob('img/*')
