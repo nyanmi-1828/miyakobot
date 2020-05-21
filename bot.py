@@ -1,3 +1,4 @@
+from discord.ext import commands,tasks
 import discord
 import traceback
 import random
@@ -6,13 +7,20 @@ import os
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix='!',help_command=None)
-
 BOT_TOKEN = os.environ['TOKEN']
+purin_value = 0
+cogs = [
+    'cogs.help'
+]
+
+for cog in cogs:
+    try:
+        bot.load_extension(cog)
+    except Exception:
+        traceback.print_exc()
 
 # imgフォルダに入ってる画像のパスを全部取得
 image_list = glob.glob('img/*')
-
-purin_value = 0
 
 # srcにデータを全て格納済み
 # プリンレシピ一覧
@@ -35,16 +43,6 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(activity=discord.Game(name="!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
-
-@bot.command(name='help')
-async def _help(ctx):
-    embed=discord.Embed(title="ヘルプ", description="コマンド一覧なの これを表示するたびに1プリンなの", color=0x00ffff) 
-    embed.add_field(name="!miyako", value="ミヤコの画像を表示するの かわいいの", inline=False) 
-    embed.add_field(name="!talk", value="喋らないの プリン🍮をくれたら喋っても良いの", inline=False) 
-    embed.add_field(name="!pudding", value="プリンのレシピを貼るの 早く作れなの", inline=False) 
-    embed.add_field(name="!omikuji", value="オマエの運勢を占ってやるの", inline=False) 
-    embed.add_field(name="!joubutsu", value="や、やめてなの…", inline=False) 
-    await ctx.send(embed=embed)
 
 @bot.command()
 async def talk(ctx):
