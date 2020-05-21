@@ -19,31 +19,31 @@ class Help(commands.Cog):
 
     @_help.command()
     async def miyako(self,ctx):
-        embed=discord.Embed(title="help miyako",color=0x00ffff)
+        embed=discord.Embed(title="ヘルプ",color=0x00ffff)
         embed.add_field(name='**!miyako**',value='ミヤコの画像を表示するの 可愛いの',inline=False)
         await ctx.send(embed=embed)
         
     @_help.command()
     async def talk(self,ctx):
-        embed=discord.Embed(title="help talk",color=0x00ffff)
+        embed=discord.Embed(title="ヘルプ",color=0x00ffff)
         embed.add_field(name='**!talk**',value='喋らないの ミヤコに🍮とリアクションしてくれれば喋るの',inline=False)
         await ctx.send(embed=embed)
 
     @_help.command()
     async def pudding(self,ctx):
-        embed=discord.Embed(title="help pudding",color=0x00ffff)
+        embed=discord.Embed(title="ヘルプ",color=0x00ffff)
         embed.add_field(name='**!pudding**',value='プリンのレシピを貼るの 登録されてるのは今の所5個だけなの',inline=False)
         await ctx.send(embed=embed)    
         
     @_help.command()
     async def omikuji(self,ctx):
-        embed=discord.Embed(title="help omikuji",color=0x00ffff)
+        embed=discord.Embed(title="ヘルプ",color=0x00ffff)
         embed.add_field(name='**!omikuji**',value='ミヤコがオマエを占ってやるの シノブより精度がいいの',inline=False)
         await ctx.send(embed=embed)
 
     @_help.command()
     async def joubutsu(self,ctx):
-        embed=discord.Embed(title="help joubutsu",color=0x00ffff)
+        embed=discord.Embed(title="ヘルプ",color=0x00ffff)
         embed.add_field(name='**!joubutsu**',value='や、やめるの…まだ成仏したくないの…お願いだからお経はやめてなの～！',inline=False)
         await ctx.send(embed=embed)
 
