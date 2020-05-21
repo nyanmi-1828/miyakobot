@@ -6,16 +6,16 @@ class Help(commands.Cog):
         self.bot = bot
 
     @commands.group(name="help")
-        async def _help(self, ctx):
-            if ctx.invoked_subcommand is None:
-                embed=discord.Embed(title="ヘルプ", description="コマンド一覧なの これを表示するたびに1プリンなの", color=0x00ffff)
-                embed.add_field(name="**!help**", value="コマンドの説明を表示するの !help [コマンド名]で各コマンドの詳しい説明をしてやるの", inline=False) 
-                embed.add_field(name="**!miyako**", value="ミヤコの画像を表示するの かわいいの", inline=False) 
-                embed.add_field(name="**!talk**", value="喋らないの プリン🍮をくれたら喋っても良いの", inline=False) 
-                embed.add_field(name="**!pudding**", value="プリンのレシピを貼るの 早く作れなの", inline=False) 
-                embed.add_field(name="**!omikuji**", value="オマエの運勢を占ってやるの", inline=False) 
-                embed.add_field(name="**!joubutsu**", value="や、やめてなの…", inline=False) 
-                await ctx.send(embed=embed)
+    async def _help(self, ctx):
+        if ctx.invoked_subcommand is None:
+            embed=discord.Embed(title="ヘルプ", description="コマンド一覧なの これを表示するたびに1プリンなの", color=0x00ffff)
+            embed.add_field(name="**!help**", value="コマンドの説明を表示するの !help [コマンド名]で各コマンドの詳しい説明をしてやるの", inline=False) 
+            embed.add_field(name="**!miyako**", value="ミヤコの画像を表示するの かわいいの", inline=False) 
+            embed.add_field(name="**!talk**", value="喋らないの プリン🍮をくれたら喋っても良いの", inline=False) 
+            embed.add_field(name="**!pudding**", value="プリンのレシピを貼るの 早く作れなの", inline=False) 
+            embed.add_field(name="**!omikuji**", value="オマエの運勢を占ってやるの", inline=False) 
+            embed.add_field(name="**!joubutsu**", value="や、やめてなの…", inline=False) 
+            await ctx.send(embed=embed)
 
     @_help.command()
     async def miyako(self,ctx):
