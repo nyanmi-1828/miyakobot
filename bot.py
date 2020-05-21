@@ -12,6 +12,7 @@ purin_value = 0
 cogs = [
     'cogs.help'
     'cogs.miyako'
+    'cogs.slot'
 ]
 
 for cog in cogs:
@@ -45,6 +46,10 @@ async def on_ready():
 @bot.command()
 async def talk(ctx):
     await ctx.send("プリンも無いのに動くわけないの")
+
+@bot.command()
+async def talktest(ctx):
+    await ctx.send("プリンも無いのに動くわけないの\nテストなの")
 
 @bot.command()
 async def joubutsu(ctx):
