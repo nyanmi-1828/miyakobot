@@ -11,6 +11,7 @@ BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 cogs = [
     'cogs.help'
+    'cogs.miyako'
 ]
 
 for cog in cogs:
@@ -18,9 +19,6 @@ for cog in cogs:
         bot.load_extension(cog)
     except Exception:
         traceback.print_exc()
-
-# imgフォルダに入ってる画像のパスを全部取得
-image_list = glob.glob('img/*')
 
 # srcにデータを全て格納済み
 # プリンレシピ一覧
@@ -50,14 +48,7 @@ async def talk(ctx):
 
 @bot.command()
 async def joubutsu(ctx):
-    await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ")
-
-@bot.command()
-async def miyako(ctx):
-    # image_listの中から1つ画像を選択
-    img = random.choice(image_list)
-    # 選択した画像を投稿
-    await ctx.send(file=discord.File(img))
+    await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ")    
 
 @bot.command()
 async def pudding(ctx):

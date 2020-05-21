@@ -9,7 +9,7 @@ class Help(commands.Cog):
     async def _help(self, ctx):
         if ctx.invoked_subcommand is None:
             embed=discord.Embed(title="ヘルプ", description="コマンド一覧なの これを表示するたびに1プリンなの", color=0x00ffff)
-            embed.add_field(name="**m!help**", value="コマンドの説明を表示するの !help [コマンド名]で各コマンドの詳しい説明をしてやるの", inline=False) 
+            embed.add_field(name="**m!help**", value="コマンドの説明を表示するの m!help [コマンド名]で各コマンドの詳しい説明をしてやるの", inline=False) 
             embed.add_field(name="**m!miyako**", value="ミヤコの画像を表示するの かわいいの", inline=False) 
             embed.add_field(name="**m!talk**", value="喋らないの プリン🍮をくれたら喋っても良いの", inline=False) 
             embed.add_field(name="**m!pudding**", value="プリンのレシピを貼るの 早く作れなの", inline=False) 
