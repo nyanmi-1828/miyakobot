@@ -18,12 +18,6 @@ class Help(commands.Cog):
                 await ctx.send(embed=embed)
 
         @_help.command()
-        async def help(self,ctx):
-            embed=discord.Embed(title="help help",color=0x00ffff)
-            embed.add_field(name='**!help**',value='コマンドの説明…流石にhelpぐらい分かれなの',inline=False)
-            await ctx.send(embed=embed)
-
-        @_help.command()
         async def miyako(self,ctx):
             embed=discord.Embed(title="help miyako",color=0x00ffff)
             embed.add_field(name='**!miyako**',value='ミヤコの画像を表示するの 可愛いの',inline=False)
