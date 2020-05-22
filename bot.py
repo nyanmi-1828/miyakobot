@@ -10,8 +10,8 @@ bot = commands.Bot(command_prefix='m!',help_command=None)
 BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 cogs = [
-    'cogs.help'
-    'cogs.miyako'
+    'cogs.help',
+    'cogs.miyako',
     'cogs.slot'
 ]
 
