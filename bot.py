@@ -48,10 +48,6 @@ async def talk(ctx):
     await ctx.send("プリンも無いのに動くわけないの")
 
 @bot.command()
-async def talktest(ctx):
-    await ctx.send("プリンも無いのに動くわけないの\nテストなの")
-
-@bot.command()
 async def joubutsu(ctx):
     await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ")    
 
