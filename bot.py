@@ -38,8 +38,8 @@ with open('src/talk.txt', mode='r', encoding='utf-8') as talk:
     talk_list = talk.read().split('\n')
 
 # 秘密なの
-with open('src/r18.txt', mode='r', encoding='utf-8') as r18:
-    miyakor18_list = r18.read().split('\n')
+with open('src/nsfw.txt', mode='r', encoding='utf-8') as nsfw:
+    nsfw_list = nsfw.read().split('\n')
 
 @bot.event
 async def on_ready():
@@ -60,9 +60,9 @@ async def omikuji(ctx):
     omikuji = random.choice(omikuji_list)
     await ctx.send(omikuji)
 
-@commands.command()
-async def miyako-nsfw(self,ctx):
-    miyakor18_link = random.choice(miyakor18_list)
+@bot.command()
+async def miyako-nsfw(ctx):
+    miyakor18_link = random.choice(nsfw_list)
     await ctx.send(miyakor18_link)
 
 @bot.event
