@@ -66,11 +66,11 @@ async def omikuji(ctx):
 async def miyakonsfw(ctx):
     miyakor18_link = random.choice(nsfw_list)
     async with aiohttp.ClientSession() as session:
-        async with session.get(miyakor18_link) as resp:
-            if resp.status != 200:
-                return await ctx.send('Could not download file...')
-        data = io.BytesIO(await resp.read())
-        await ctx.send(file=discord.File(data, miyakor18_link))
+        async with session.get("https://i.pximg.net/img-original/img/2020/04/28/02/03/42/81116890_p1.png") as resp:
+            if resp.status = 200:
+                data = io.BytesIO(await resp.read())
+                await ctx.send(file=discord.File(data))
+
 
 @bot.event
 async def on_reaction_add(reaction,user):
@@ -99,6 +99,6 @@ async def on_command_error(ctx, error):
     embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
     embed.add_field(name="発生エラー", value=error, inline=False)
     m = await bot.get_channel(ch).send(embed=embed)
-    await ctx.send(f"エラーが出たの　ミヤコにはこのIDが何なのかよく分からないけど、とりあえず開発者に送ってみるの：{m.id}")
+    await ctx.send(f"エラーが出たの")
             
 bot.run(BOT_TOKEN)
