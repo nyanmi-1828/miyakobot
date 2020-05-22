@@ -40,7 +40,5 @@ class Casino(commands.Cog):
     async def joubutsu(self,ctx):
         await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ") 
         
-
-        
 def setup(bot):
     bot.add_cog(Casino(bot))
