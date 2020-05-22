@@ -27,7 +27,7 @@ class Casino(commands.Cog):
         result = "%s%s%s" % (A, B, C)
         if A == B and B == C:
             await ctx.send(result + "\n" + result_list[slot_list.index(A)])
-        elif A == B or B == C A == C:
+        elif A == B or B == C or A == C:
             await ctx.send(result + "\n" + "もうちょっとだったの！もう一回なの！")
         else:
             await ctx.send(result + "\n" + "はずれなの！もう一回なの！")
