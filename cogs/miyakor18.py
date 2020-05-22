@@ -10,7 +10,7 @@ class MiyakoR18(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def miyakor18(self,ctx):
+    async def miyakor188(self,ctx):
         miyakor18_link = random.choice(miyakor18_list)
         await ctx.send(miyakor18_link)
 

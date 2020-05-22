@@ -12,6 +12,10 @@ class Miyako(commands.Cog):
         image_list = glob.glob('./img/*')
         img = random.choice(image_list)
         await ctx.send(file=discord.File(img))
+    
+    @commands.command()
+    async def miyakor18(self,ctx):
+        await ctx.send("14歳にそんなの求めるなんて、変態なの…？")
 
 def setup(bot):
     bot.add_cog(Miyako(bot))
