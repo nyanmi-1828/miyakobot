@@ -32,5 +32,20 @@ class Casino(commands.Cog):
         else:
             await ctx.send(result + "\n" + "はずれなの！もう一回なの！")
         
+    @commands.command()
+    async def talk(self,ctx):
+        await ctx.send("プリンも無いのに動くわけないの")
+    
+    @commands.command()
+    async def joubutsu(self,ctx):
+        await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ") 
+    
+    @commands.command()
+    async def miyako-nsfw-r18(self,ctx):
+    with open('./src/r18.txt', mode='r', encoding='utf-8') as r18:
+        miyakor18_list = r18.read().split('\n')
+    miyakor18 = random.choice(miyakor18_list)
+    await ctx.send(miyakor18)
+        
 def setup(bot):
     bot.add_cog(Casino(bot))
