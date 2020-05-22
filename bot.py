@@ -64,13 +64,8 @@ async def omikuji(ctx):
 
 @bot.command()
 async def miyakonsfw(ctx):
-    miyakor18_link = random.choice(nsfw_list)
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://i.pximg.net/img-original/img/2020/04/28/02/03/42/81116890_p1.png") as resp:
-            if resp.status = 200:
-                data = io.BytesIO(await resp.read())
-                await ctx.send(file=discord.File(data))
-
+    nsfw_link = random.choice(nsfw_list)
+    await ctx.send(nsfw_link)
 
 @bot.event
 async def on_reaction_add(reaction,user):
