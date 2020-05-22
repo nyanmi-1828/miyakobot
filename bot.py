@@ -13,7 +13,7 @@ cogs = [
     'cogs.help',
     'cogs.miyako',
     'cogs.slot'
-]
+    ]
 # cogs.help = helpコマンド
 # cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
 # cogs.slot = slotコマンド
