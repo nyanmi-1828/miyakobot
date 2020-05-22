@@ -13,7 +13,7 @@ result_list = [
     "お酒が3つ揃ったの お酒が入ったお風呂は身を清められるらしいの… や、やめてなの！ミヤコを突っ込まないで欲しいの！"
     ]
 
-class Slot(commands.Cog):
+class Casino(commands.Cog):
     def __init__(self,bot):
         self.bot = bot  
     
@@ -33,4 +33,4 @@ class Slot(commands.Cog):
             await ctx.send(result + "\n" + "はずれなの！もう一回なの！")
         
 def setup(bot):
-    bot.add_cog(Slot(bot))
+    bot.add_cog(Casino(bot))
