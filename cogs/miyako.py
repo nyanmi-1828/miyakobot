@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+import glob
 
 class Miyako(commands.Cog):
     def __init__(self,bot):
