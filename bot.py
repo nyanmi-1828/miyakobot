@@ -76,5 +76,9 @@ async def on_reaction_add(reaction,user):
         purin_value = 0
     else:
         purin_value = 0
+
+@bot.event
+async def on_command_error(ctx,error):
+    await ctx.send("そんなコマンドないの")
             
 bot.run(BOT_TOKEN)
