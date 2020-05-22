@@ -61,7 +61,7 @@ async def omikuji(ctx):
     await ctx.send(omikuji)
 
 @bot.command()
-async def miyako-nsfw(ctx):
+async def miyakor18(ctx):
     miyakor18_link = random.choice(nsfw_list)
     await ctx.send(miyakor18_link)
 
