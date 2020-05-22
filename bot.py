@@ -12,8 +12,7 @@ purin_value = 0
 cogs = [
     'cogs.help',
     'cogs.miyako',
-    'cogs.slot',
-    'cogs.miyakor18'
+    'cogs.slot'
     ]
 # cogs.help = helpコマンド
 # cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
@@ -38,6 +37,10 @@ with open('src/omikuji.txt', mode='r', encoding='utf-8') as omikuji:
 with open('src/talk.txt', mode='r', encoding='utf-8') as talk:
     talk_list = talk.read().split('\n')
 
+# 秘密なの
+with open('src/r18.txt', mode='r', encoding='utf-8') as r18:
+    miyakor18_list = r18.read().split('\n')
+
 @bot.event
 async def on_ready():
     
@@ -56,6 +59,11 @@ async def pudding(ctx):
 async def omikuji(ctx):
     omikuji = random.choice(omikuji_list)
     await ctx.send(omikuji)
+
+@commands.command()
+async def miyako-nsfw(self,ctx):
+    miyakor18_link = random.choice(miyakor18_list)
+    await ctx.send(miyakor18_link)
 
 @bot.event
 async def on_reaction_add(reaction,user):
