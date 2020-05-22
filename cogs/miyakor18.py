@@ -14,4 +14,4 @@ class MiyakoR18(commands.Cog):
     await ctx.send(miyakor18)
 
 def setup(bot):
-    bot.add_cog(Miyako(bot))
+    bot.add_cog(MiyakoR18(bot))
