@@ -12,7 +12,8 @@ purin_value = 0
 cogs = [
     'cogs.help',
     'cogs.miyako',
-    'cogs.slot'
+    'cogs.slot',
+    'cogs.miyakor18'
     ]
 # cogs.help = helpコマンド
 # cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
