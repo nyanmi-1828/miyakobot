@@ -31,14 +31,6 @@ class Casino(commands.Cog):
             await ctx.send(result + "\n" + "もうちょっとだったの！もう一回なの！")
         else:
             await ctx.send(result + "\n" + "はずれなの！もう一回なの！")
-
-    @commands.command()
-    async def talk(self,ctx):
-        await ctx.send("プリンも無いのに動くわけないの")
-    
-    @commands.command()
-    async def joubutsu(self,ctx):
-        await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ") 
         
 def setup(bot):
     bot.add_cog(Casino(bot))
