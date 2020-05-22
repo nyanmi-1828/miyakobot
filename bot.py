@@ -73,7 +73,16 @@ async def on_reaction_add(reaction,user):
         purin_value = 0
 
 @bot.event
-async def on_command_error(ctx,error):
-    await ctx.send("そんなコマンドないの")
+async def on_command_error(ctx, error):
+    ch = 713459691153391707
+    embed = discord.Embed(title="エラー情報", description="", color=0xf00)
+    embed.add_field(name="エラー発生サーバー名", value=ctx.guild.name, inline=False)
+    embed.add_field(name="エラー発生サーバーID", value=ctx.guild.id, inline=False)
+    embed.add_field(name="エラー発生ユーザー名", value=ctx.author.name, inline=False)
+    embed.add_field(name="エラー発生ユーザーID", value=ctx.author.id, inline=False)
+    embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
+    embed.add_field(name="発生エラー", value=error, inline=False)
+    m = await bot.get_channel(ch).send(embed=embed)
+    await ctx.send(f"何らかのエラーが発生しました。ごめんなさい。\nこのエラーについて問い合わせるときはこのコードも一緒にお知らせください：{m.id}")
             
 bot.run(BOT_TOKEN)

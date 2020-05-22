@@ -13,7 +13,5 @@ class Miyako(commands.Cog):
         img = random.choice(image_list)
         await ctx.send(file=discord.File(img))
 
-
-
 def setup(bot):
     bot.add_cog(Miyako(bot))
