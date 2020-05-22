@@ -14,6 +14,9 @@ cogs = [
     'cogs.miyako',
     'cogs.slot'
 ]
+# cogs.help = helpコマンド
+# cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
+# cogs.slot = slotコマンド
 
 for cog in cogs:
     try:
@@ -42,14 +45,6 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(activity=discord.Game(name="m!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
-
-@bot.command()
-async def talk(ctx):
-    await ctx.send("プリンも無いのに動くわけないの")
-
-@bot.command()
-async def joubutsu(ctx):
-    await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ")    
 
 @bot.command()
 async def pudding(ctx):

@@ -12,6 +12,14 @@ class Miyako(commands.Cog):
         image_list = glob.glob('./img/*')
         img = random.choice(image_list)
         await ctx.send(file=discord.File(img))
+    
+    @commands.command()
+    async def talk(self,ctx):
+        await ctx.send("プリンも無いのに動くわけないの")
+    
+    @commands.command()
+    async def joubutsu(self,ctx):
+        await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ") 
 
 def setup(bot):
     bot.add_cog(Miyako(bot))
