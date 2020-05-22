@@ -10,15 +10,14 @@ class Miyako(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
     
-    @commands.group(name="miyako")
-    async def _miyako(self,ctx):
-        if ctx.invoked_subcommand is None:
-            image_list = glob.glob('./img/*')
-            img = random.choice(image_list)
-            await ctx.send(file=discord.File(img))
+    @commands.command()
+    async def miyako(self,ctx):
+        image_list = glob.glob('./img/*')
+        img = random.choice(image_list)
+        await ctx.send(file=discord.File(img))
 
-    @_miyako.command()
-    async def nsfw-r18(self,ctx):
+    @commands.command()
+    async def miyako-nsfw-r18(self,ctx):
         global miyakor18_list
         miyakor18 = random.choice(miyakor18_list)
         await ctx.send(miyakor18)
