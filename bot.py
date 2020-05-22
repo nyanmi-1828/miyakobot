@@ -5,6 +5,8 @@ import random
 import glob
 import os
 from discord.ext import commands
+import io
+import aiohttp
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
 BOT_TOKEN = os.environ['TOKEN']
@@ -61,9 +63,14 @@ async def omikuji(ctx):
     await ctx.send(omikuji)
 
 @bot.command()
-async def miyakor18(ctx):
+async def miyakonsfw(ctx):
     miyakor18_link = random.choice(nsfw_list)
-    await ctx.send(miyakor18_link)
+    async with aiohttp.ClientSession() as session:
+        async with session.get(miyakor18_link) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+        data = io.BytesIO(await resp.read())
+        await ctx.send(file=discord.File(data, miyakor18_link))
 
 @bot.event
 async def on_reaction_add(reaction,user):
@@ -72,14 +79,14 @@ async def on_reaction_add(reaction,user):
     global purin_value
     print(purin_value)
     miya_talk = random.choice(talk_list)
-    if reaction.emoji == "🍮" and purin_value < 15:
+    if user.bot == False and reaction.emoji == "🍮" and purin_value < 15:
         purin_value += 1
         await reaction.message.channel.send(miya_talk)
     elif purin_value == 15:
         await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
         purin_value = 0
     else:
-        purin_value = 0
+        pass
 
 @bot.event
 async def on_command_error(ctx, error):
