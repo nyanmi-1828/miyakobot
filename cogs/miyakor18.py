@@ -11,7 +11,6 @@ class MiyakoR18(commands.Cog):
 
     @commands.command()
     async def miyakor18(self,ctx):
-        global miyakor18_list
         miyakor18_link = random.choice(miyakor18_list)
         await ctx.send(miyakor18_link)
 
