@@ -84,6 +84,13 @@ async def on_reaction_add(reaction,user):
         pass
 
 @bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+    if message.content == '🍮':
+        await message.channel.send('でっかいプリンなの！いただきますなの～♪')
+
+@bot.event
 async def on_command_error(ctx, error):
     ch = 713459691153391707
     embed = discord.Embed(title="エラー情報", description="", color=0xf00)
