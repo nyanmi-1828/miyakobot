@@ -9,7 +9,7 @@ import io
 import aiohttp
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
-# BOT_TOKEN = os.environ['TOKEN']
+BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 cogs = [
     'cogs.help',
@@ -52,6 +52,29 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Game(name="メンテナンス中なの　少しコマンドが使えなくなるの"))
 
+@bot.event
+async def on_message(message):
+    if message.content.startswith("m!"):
+        pass
+    
+    else:
+        print(message)
+        if message.author.bot:
+            return
+        if '🍮' in message.content:
+            await message.channel.send('でっかいプリンなの！いただきますなの～♪')
+    await bot.process_commands(message)
+
+@bot.event
+async def on_message_edit(before, after):
+    print(after)
+    if before.author.bot:
+        return
+    if '🍮' in before.content and not '🍮' in after.content:
+        await after.channel.send('プリン返せなの～！')
+    else:
+        pass
+
 @bot.command()
 async def pudding(ctx):
     purin = random.choice(recipe_list)
@@ -82,31 +105,6 @@ async def on_reaction_add(reaction,user):
         purin_value = 0
     else:
         pass
-
-@bot.event
-async def on_message(message):
-    if message.content.startswith("m!"):
-        pass
-    
-    else:
-        if message.author.bot:
-            return
-        if '🍮' in message.content:
-            await message.channel.send('でっかいプリンなの！いただきますなの～♪')
-
-@bot.event
-async def on_message_edit(before, after):
-    if message.content.startswith("m!"):
-        pass
-
-    else:  
-        if message.author.bot:
-            return
-        if '🍮' in before.content and not '🍮' in after.content:
-            await message.channel.send('プリン返せなの～！')
-        else:
-            pass
-
 
 @bot.event
 async def on_command_error(ctx, error):
