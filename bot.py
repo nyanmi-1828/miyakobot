@@ -73,6 +73,17 @@ async def on_message_edit(before, after):
     else:
         pass
 
+@bot.event
+async def on_message_delete(message)
+    if message.content.startswith("m!"):
+        pass
+    
+    else:
+        if message.author.bot:
+            return
+        if '🍮' in message.content:
+            await message.channel.send("プリン返せなの～！")
+
 @bot.command()
 async def pudding(ctx):
     purin = random.choice(recipe_list)
