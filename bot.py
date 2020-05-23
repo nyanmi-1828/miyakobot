@@ -85,17 +85,27 @@ async def on_reaction_add(reaction,user):
 
 @bot.event
 async def on_message(message):
-    if message.author.bot:
-        return
-    if '🍮' in message.content:
-        await message.channel.send('でっかいプリンなの！いただきますなの～♪')
+    if message.content.startswith("m!"):
+        pass
+    
+    else:
+        if message.author.bot:
+            return
+        if '🍮' in message.content:
+            await message.channel.send('でっかいプリンなの！いただきますなの～♪')
 
 @bot.event
 async def on_message_edit(before, after):
-    if message.author.bot:
-        return
-    if '🍮' in before.content and not '🍮' in after.content:
-        await message.channel.send('プリン返せなの～！')
+    if message.content.startswith("m!"):
+        pass
+
+    else:  
+        if message.author.bot:
+            return
+        if '🍮' in before.content and not '🍮' in after.content:
+            await message.channel.send('プリン返せなの～！')
+        else:
+            pass
 
 
 @bot.event
