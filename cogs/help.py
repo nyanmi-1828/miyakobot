@@ -11,9 +11,11 @@ class Help(commands.Cog):
             embed=discord.Embed(title="ヘルプ", description="コマンド一覧なの これを表示するたびに1プリンなの", color=0x00ffff)
             embed.add_field(name="**m!help**", value="コマンドの説明を表示するの m!help [コマンド名]で各コマンドの詳しい説明をしてやるの", inline=False) 
             embed.add_field(name="**m!miyako**", value="ミヤコの画像を表示するの かわいいの", inline=False) 
+            embed.add_field(name="**m!miyakor18**", value="サイテーなの ケーベツしたの", inline=False) 
             embed.add_field(name="**m!talk**", value="喋らないの プリン🍮をくれたら喋っても良いの", inline=False) 
             embed.add_field(name="**m!pudding**", value="プリンのレシピを貼るの 早く作れなの", inline=False) 
             embed.add_field(name="**m!omikuji**", value="オマエの運勢を占ってやるの", inline=False) 
+            embed.add_field(name="**m!slot**", value="スロットが出来るの プリンが大当たりなの～♪", inline=False) 
             embed.add_field(name="**m!joubutsu**", value="や、やめてなの…", inline=False) 
             await ctx.send(embed=embed)
 
@@ -21,6 +23,12 @@ class Help(commands.Cog):
     async def miyako(self,ctx):
         embed=discord.Embed(title="ヘルプ",color=0x00ffff)
         embed.add_field(name='**m!miyako**',value='ミヤコの画像を表示するの 可愛いの',inline=False)
+        await ctx.send(embed=embed)
+
+    @_help.command()
+    async def miyakor18(self,ctx):
+        embed=discord.Embed(title="ヘルプ",color=0x00ffff)
+        embed.add_field(name='**m!miyakor18**',value='貼らないの！ …m!miyakonsfwでしょうがないから貼ってやるの オマエならやらないと信じてるの',inline=False)
         await ctx.send(embed=embed)
         
     @_help.command()
@@ -39,6 +47,12 @@ class Help(commands.Cog):
     async def omikuji(self,ctx):
         embed=discord.Embed(title="ヘルプ",color=0x00ffff)
         embed.add_field(name='**m!omikuji**',value='ミヤコがオマエを占ってやるの シノブより精度がいいの',inline=False)
+        await ctx.send(embed=embed)
+
+    @_help.command()
+    async def slot(self,ctx):
+        embed=discord.Embed(title="ヘルプ",color=0x00ffff)
+        embed.add_field(name='**m!slot**',value='スロットが出来るの 何かがそろう確率は49分の1、プリンは343分の1らしいの',inline=False)
         await ctx.send(embed=embed)
 
     @_help.command()
