@@ -50,7 +50,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(activity=discord.Game(name="m!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
+    await bot.change_presence(activity=discord.Game(name="メンテナンス中なの　少しコマンドが使えなくなるの"))
 
 @bot.command()
 async def pudding(ctx):
@@ -89,6 +89,14 @@ async def on_message(message):
         return
     if '🍮' in message.content:
         await message.channel.send('でっかいプリンなの！いただきますなの～♪')
+
+@bot.event
+async def on_message_edit(before, after):
+    if message.author.bot:
+        return
+    if '🍮' in before.content and not '🍮' in after.content:
+        await message.channel.send('プリン返せなの～！')
+
 
 @bot.event
 async def on_command_error(ctx, error):
