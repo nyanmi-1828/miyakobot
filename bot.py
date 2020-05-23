@@ -74,7 +74,7 @@ async def on_message_edit(before, after):
         pass
 
 @bot.event
-async def on_message_delete(message)
+async def on_message_delete(message):
     if message.author.bot:
         return
     if '🍮' in message.content:
