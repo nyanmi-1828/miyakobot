@@ -50,7 +50,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(activity=discord.Game(name="メンテナンス中なの　少しコマンドが使えなくなるの"))
+    await bot.change_presence(activity=discord.Game(name="m!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
 
 @bot.event
 async def on_message(message):
@@ -58,7 +58,6 @@ async def on_message(message):
         pass
     
     else:
-        print(message)
         if message.author.bot:
             return
         if '🍮' in message.content:
@@ -67,7 +66,6 @@ async def on_message(message):
 
 @bot.event
 async def on_message_edit(before, after):
-    print(after)
     if before.author.bot:
         return
     if '🍮' in before.content and not '🍮' in after.content:
