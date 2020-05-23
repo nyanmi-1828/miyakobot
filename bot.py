@@ -87,7 +87,7 @@ async def on_reaction_add(reaction,user):
 async def on_message(message):
     if message.author.bot:
         return
-    if message.content == '🍮':
+    if '🍮' in message.content:
         await message.channel.send('でっかいプリンなの！いただきますなの～♪')
 
 @bot.event
