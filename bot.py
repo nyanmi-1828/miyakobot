@@ -11,6 +11,8 @@ import ffmpeg
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
 BOT_TOKEN = os.environ['TOKEN']
+if not discord.opus.is_loaded(): 
+    discord.opus.load_opus("heroku-buildpack-libopus")
 purin_value = 0
 cogs = [
     'cogs.help',
@@ -154,8 +156,6 @@ async def play(ctx):
 
     ffmpeg_audio_source = discord.FFmpegPCMAudio("tmp.mp3")
     voice_client.play(ffmpeg_audio_source)
-
-    await ctx.send("再生しました。")
 
 @bot.event
 async def on_command_error(ctx, error):
