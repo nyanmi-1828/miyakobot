@@ -8,7 +8,6 @@ import io
 import aiohttp
 import asyncio
 
-
 bot = commands.Bot(command_prefix='m!',help_command=None)
 BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
