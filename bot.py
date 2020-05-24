@@ -7,7 +7,6 @@ import os
 from discord.ext import commands
 import io
 import aiohttp
-import ffmpeg
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
 BOT_TOKEN = os.environ['TOKEN']
@@ -113,49 +112,6 @@ async def on_reaction_add(reaction,user):
         purin_value = 0
     else:
         pass
-
-@bot.command(aliases=["connect","summon"]) 
-async def join(ctx):
-    voice_state = ctx.author.voice
-
-    if (not voice_state) or (not voice_state.channel):
-        #もし送信者がどこのチャンネルにも入っていないなら
-        await ctx.send("先にボイスチャンネルに入っている必要があるの")
-        return
-
-    channel = voice_state.channel #送信者のチャンネル
-
-    await channel.connect() #VoiceChannel.connect()を使用
-    print("connected to:", channel.name)
-
-@bot.command(aliases=["disconnect","bye"])
-async def leave(ctx):
-    voice_client = ctx.message.guild.voice_client
-
-    if not voice_client:
-        await ctx.send("ミヤコがボイスチャンネルに入ってないの")
-        return
-
-    await voice_client.disconnect()
-    await ctx.send("ボイスチャンネルから切断したの")
-
-@bot.command()
-async def play(ctx):
-    """指定された音声ファイルを流します。"""
-    voice_client = ctx.message.guild.voice_client
-
-    if not voice_client:
-        await ctx.send("Botはこのサーバーのボイスチャンネルに参加していません。")
-        return
-
-    if not ctx.message.attachments:
-        await ctx.send("ファイルが添付されていません。")
-        return
-
-    await ctx.message.attachments[0].save("tmp.mp3")
-
-    ffmpeg_audio_source = discord.FFmpegPCMAudio("tmp.mp3")
-    voice_client.play(ffmpeg_audio_source)
 
 @bot.event
 async def on_command_error(ctx, error):
