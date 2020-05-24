@@ -7,6 +7,9 @@ import os
 from discord.ext import commands
 import io
 import aiohttp
+import subprocess
+import ffmpeg
+from voice_generator import creat_WAV
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
 BOT_TOKEN = os.environ['TOKEN']
@@ -19,6 +22,9 @@ cogs = [
 # cogs.help = helpコマンド
 # cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
 # cogs.slot = slotコマンド
+
+if not discord.opus.is_loaded():
+    discord.opus.load_opus("heroku-buildpack-libopus")
 
 for cog in cogs:
     try:
@@ -62,6 +68,14 @@ async def on_message(message):
             return
         if '🍮' in message.content:
             await message.channel.send('でっかいプリンなの！いただきますなの～♪')
+        else:
+            if message.guild.voice_client:
+                print(message.content)
+                creat_WAV(message.content)
+                source = discord.FFmpegPCMAudio("output.wav")
+                message.guild.voice_client.play(source)
+            else:
+                pass
     await bot.process_commands(message)
 
 @bot.event
@@ -111,6 +125,51 @@ async def on_reaction_add(reaction,user):
     else:
         pass
 
+@bot.command(aliases=["connect","summon"]) 
+async def join(ctx):
+    voice_state = ctx.author.voice
+
+    if (not voice_state) or (not voice_state.channel):
+        #もし送信者がどこのチャンネルにも入っていないなら
+        await ctx.send("先にボイスチャンネルに入っている必要があるの")
+        return
+
+    channel = voice_state.channel #送信者のチャンネル
+
+    await channel.connect() #VoiceChannel.connect()を使用
+    print("connected to:", channel.name)
+
+@bot.command(aliases=["disconnect","bye"])
+async def leave(ctx):
+    voice_client = ctx.message.guild.voice_client
+
+    if not voice_client:
+        await ctx.send("ミヤコがボイスチャンネルに入ってないの")
+        return
+
+    await voice_client.disconnect()
+    await ctx.send("ボイスチャンネルから切断したの")
+
+@bot.command()
+async def play(ctx):
+    """指定された音声ファイルを流します。"""
+    voice_client = ctx.message.guild.voice_client
+
+    if not voice_client:
+        await ctx.send("Botはこのサーバーのボイスチャンネルに参加していません。")
+        return
+
+    if not ctx.message.attachments:
+        await ctx.send("ファイルが添付されていません。")
+        return
+
+    await ctx.message.attachments[0].save("tmp.mp3")
+
+    ffmpeg_audio_source = discord.FFmpegPCMAudio("tmp.mp3")
+    voice_client.play(ffmpeg_audio_source)
+
+    await ctx.send("再生しました。")
+
 @bot.event
 async def on_command_error(ctx, error):
     ch = 713459691153391707
@@ -123,5 +182,6 @@ async def on_command_error(ctx, error):
     embed.add_field(name="発生エラー", value=error, inline=False)
     m = await bot.get_channel(ch).send(embed=embed)
     await ctx.send(f"エラーが出たの")
-            
+
+
 bot.run(BOT_TOKEN)
