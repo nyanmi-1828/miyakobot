@@ -9,7 +9,6 @@ import io
 import aiohttp
 import subprocess
 import ffmpeg
-from voice_generator import creat_WAV
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
 BOT_TOKEN = os.environ['TOKEN']
@@ -22,9 +21,6 @@ cogs = [
 # cogs.help = helpコマンド
 # cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
 # cogs.slot = slotコマンド
-
-if not discord.opus.is_loaded():
-    discord.opus.load_opus("heroku-buildpack-libopus")
 
 for cog in cogs:
     try:
@@ -69,13 +65,6 @@ async def on_message(message):
         if '🍮' in message.content:
             await message.channel.send('でっかいプリンなの！いただきますなの～♪')
         else:
-            if message.guild.voice_client:
-                print(message.content)
-                creat_WAV(message.content)
-                source = discord.FFmpegPCMAudio("output.wav")
-                message.guild.voice_client.play(source)
-            else:
-                pass
     await bot.process_commands(message)
 
 @bot.event
