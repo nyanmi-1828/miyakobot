@@ -1,2 +1,4 @@
-https://github.com/kennethreitz/conda-buildpack.git
+https://github.com/Sashimimochi/conda-buildpack.git
 https://github.com/sunny4381/heroku-buildpack-linuxbrew.git
+https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
+https://github.com/Crazycatz00/heroku-buildpack-libopus.git
