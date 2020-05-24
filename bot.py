@@ -6,7 +6,6 @@ import os
 from discord.ext import commands
 import io
 import aiohttp
-import ffmpeg
 import asyncio
 
 
