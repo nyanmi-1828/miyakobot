@@ -7,6 +7,7 @@ from discord.ext import commands
 import io
 import aiohttp
 import asyncio
+import discord[voice]
 
 
 bot = commands.Bot(command_prefix='m!',help_command=None)

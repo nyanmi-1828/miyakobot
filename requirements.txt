@@ -1,3 +1,4 @@
 discord.py
 aiohttp
 discord.py[voice]
+pynacl
