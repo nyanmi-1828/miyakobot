@@ -64,7 +64,6 @@ async def on_message(message):
             return
         if '🍮' in message.content:
             await message.channel.send('でっかいプリンなの！いただきますなの～♪')
-        else:
     await bot.process_commands(message)
 
 @bot.event
