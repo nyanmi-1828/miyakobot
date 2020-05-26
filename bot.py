@@ -144,6 +144,7 @@ async def leave(ctx):
 async def play(ctx, youtube_url):
     """指定された音声ファイルを流します。"""
     voice_client = ctx.message.guild.voice_client
+    voice_state = ctx.author.voice
     channel = voice_state.channel
 
     # botがボイスチャンネルに接続していない場合
