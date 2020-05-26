@@ -157,7 +157,7 @@ async def play(ctx, youtube_url):
         await channel.connect()
     
     # ファイルが添付されていない、またはURLが指定されていない場合
-    if not ctx.message.attachments or youtube_url == "":
+    if not ctx.message.attachments or not youtube_url == "":
         await ctx.send("ファイルが添付されてないかURLが指定されていないの")
         return
 
