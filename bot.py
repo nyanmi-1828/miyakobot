@@ -140,7 +140,7 @@ async def leave(ctx):
     await ctx.send("ボイスチャンネルから切断したの")
 
 
-@bot.command()
+@bot.group(invoke_without_command=True)
 async def play(ctx, youtube_url):
     """指定された音声ファイルを流します。"""
     voice_client = ctx.message.guild.voice_client
@@ -157,25 +157,25 @@ async def play(ctx, youtube_url):
         await channel.connect()
 
     # ファイルが添付されている場合
-    if ctx.message.attachments == True:
+    if youtube_url == "mp3" and ctx.message.attachments == True:
         await ctx.message.attachments[0].save("tmp.mp3")
         ffmpeg_audio_source = discord.FFmpegPCMAudio("tmp.mp3")
         voice_client.play(ffmpeg_audio_source)
         await ctx.send("再生したの")
         return
 
-    # 一応接続しているか確認、URL先をDLして再生
-    if voice_client == True:
+    # URL先をDLして再生
+    if not youtube_url == "":
         player = await channel.create_ytdl_player(youtube_url)
         player.start()
         await ctx.send("再生したの")
         return
 
-    if not youtube_url == "":
-        await ctx.send("URLが指定されていないの")
+    if not ctx.message.attachments:
+        await ctx.send("ファイルが添付されてないの")
         return
     else:
-        await ctx.send("ファイルが添付されてないの")
+        return
 
 @bot.command()
 async def stop(ctx):
