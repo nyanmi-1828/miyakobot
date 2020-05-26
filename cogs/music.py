@@ -210,7 +210,7 @@ class Music(commands.Cog):
         await player.queue.put(source)
     
     @commands.command(aliases=['singmp3','playmp3'])
-    async def mp3(self, ctx, *, search: str):
+    async def mp3(self, ctx):
         await ctx.trigger_typing()
 
         vc = ctx.voice_client
@@ -219,12 +219,8 @@ class Music(commands.Cog):
             await ctx.invoke(self.connect_)
 
         player = self.get_player(ctx)
-
-        try:
-            async with timeout(5):
-                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=True)
-        except:
-            source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
+        await ctx.message.attachments[0].save("tmp.mp3")
+        source = discord.FFmpegPCMAudio("tmp.mp3")
 
         await player.queue.put(source)
         return
