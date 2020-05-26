@@ -4,6 +4,9 @@ import random
 import glob
 import asyncio
 
+mp3_j_list = glob.glob('./mp3/joubutsu/*')
+mp3_s_list = glob.glob('./mp3/speak/*')
+
 class Miyako(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
@@ -22,11 +25,25 @@ class Miyako(commands.Cog):
     async def talk(self,ctx):
         msg = await ctx.send("プリンも無いのに動くわけないの")
         await msg.add_reaction('🍮')
-    
+
+    @commands.command()
+    async def speak(self,ctx):
+        voice_client = ctx.message.guild.voice_client
+        global mp3_s_list
+        mp3_s = random.choice(mp3_s_list)
+
+        if not voice_client:
+            await ctx.send("ボイスチャンネルに入ってないと使えないコマンドなの") 
+            return
+        else:
+            ffmpeg_audio_source = discord.FFmpegPCMAudio(mp3_s)
+            voice_client.play(ffmpeg_audio_source)
+            return
+
     @commands.command()
     async def joubutsu(self,ctx):
         voice_client = ctx.message.guild.voice_client
-        mp3_j_list = glob.glob('./mp3/joubutsu/*')
+        global mp3_j_list
         mp3_j = random.choice(mp3_j_list)
 
         if not voice_client:

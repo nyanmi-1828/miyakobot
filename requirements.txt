@@ -2,3 +2,4 @@ discord.py
 aiohttp
 discord.py[voice]
 pynacl
+youtube_dl

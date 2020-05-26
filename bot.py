@@ -123,6 +123,7 @@ async def join(ctx):
     channel = voice_state.channel
 
     await channel.connect()
+    await ctx.send("入ったの～")
     print("connected to:",channel.name)
 
 
@@ -140,24 +141,49 @@ async def leave(ctx):
 
 
 @bot.command()
-async def play(ctx):
+async def play(ctx, youtube_url):
     """指定された音声ファイルを流します。"""
     voice_client = ctx.message.guild.voice_client
+    channel = voice_state.channel
 
+    # botがボイスチャンネルに接続していない場合
     if not voice_client:
-        await ctx.send("ミヤコはこのサーバーのボイスチャンネルに参加してないの")
-        return
-
+        # 自分がボイスチャンネルに接続していない場合
+        if (not voice_state) or (not voice_state.channel):
+            await ctx.send("オマエが先にボイスチャンネルに入っている必要があるの")
+            return
+        # 接続
+        await channel.connect()
+    
+    # ファイルが添付されていない、またはURLが指定されていない場合
     if not ctx.message.attachments:
         await ctx.send("ファイルが添付されてないの")
         return
 
-    await ctx.message.attachments[0].save("tmp.mp3")
+    # ファイルが添付されている場合
+    if ctx.message.attachments == True:
+        await ctx.message.attachments[0].save("tmp.mp3")
+        ffmpeg_audio_source = discord.FFmpegPCMAudio("tmp.mp3")
+        voice_client.play(ffmpeg_audio_source)
+        await ctx.send("再生したの")
+        return
 
-    ffmpeg_audio_source = discord.FFmpegPCMAudio("tmp.mp3")
-    voice_client.play(ffmpeg_audio_source)
+    # 一応接続しているか確認、URL先を
+    if voice_client == True:
+        player = await channel.create_ytdl_player(youtube_url)
+        player.start()
+        await ctx.send("再生したの")
+        return
 
-    await ctx.send("再生したの")
+@bot.command()
+async def stop(ctx):
+    if(player.is_playing()):
+        player.stop()
+        return
+    else:
+        await ctx.send("何も再生してないの")
+        return
+    
 
 @bot.event
 async def on_command_error(ctx, error):
