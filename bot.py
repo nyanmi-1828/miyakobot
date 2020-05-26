@@ -164,12 +164,18 @@ async def play(ctx, youtube_url):
         await ctx.send("再生したの")
         return
 
-    # 一応接続しているか確認、URL先を
+    # 一応接続しているか確認、URL先をDLして再生
     if voice_client == True:
         player = await channel.create_ytdl_player(youtube_url)
         player.start()
         await ctx.send("再生したの")
         return
+
+    if not youtube_url == ""
+        await ctx.send("URLが指定されていないの")
+        return
+    else:
+        await ctx.send("ファイルが添付されてないの")
 
 @bot.command()
 async def stop(ctx):
