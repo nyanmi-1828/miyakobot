@@ -45,8 +45,12 @@ class Miyako(commands.Cog):
         voice_client = ctx.message.guild.voice_client
         global mp3_j_list
         mp3_j = random.choice(mp3_j_list)
+        vc = ctx.voice_client
 
         if not voice_client:
+            await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ") 
+            return
+        if vc.is_playing():
             await ctx.send("ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ") 
             return
         else:
