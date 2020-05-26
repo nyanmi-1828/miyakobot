@@ -9,7 +9,7 @@ import aiohttp
 import asyncio
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
-BOT_TOKEN = os.environ['TOKEN']
+#BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 cogs = [
     'cogs.help',
@@ -146,6 +146,9 @@ async def play(ctx, youtube_url):
     voice_client = ctx.message.guild.voice_client
     voice_state = ctx.author.voice
     channel = voice_state.channel
+    voice_channel = ctx.message.author.voice.channel
+    voice = await bot.join.channel(voice_channel)
+    print(youtube_url)
 
     # botがボイスチャンネルに接続していない場合
     if not voice_client:
@@ -156,8 +159,8 @@ async def play(ctx, youtube_url):
         # 接続
         await channel.connect()
 
-    # ファイルが添付されている場合
-    if youtube_url == "mp3" and ctx.message.attachments == True:
+    # mp3を再生する場合
+    if youtube_url == "mp3":
         await ctx.message.attachments[0].save("tmp.mp3")
         ffmpeg_audio_source = discord.FFmpegPCMAudio("tmp.mp3")
         voice_client.play(ffmpeg_audio_source)
@@ -166,7 +169,7 @@ async def play(ctx, youtube_url):
 
     # URL先をDLして再生
     if not youtube_url == "":
-        player = await channel.create_ytdl_player(youtube_url)
+        player = await voice.create_ytdl_player(youtube_url)
         player.start()
         await ctx.send("再生したの")
         return
