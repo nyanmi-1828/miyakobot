@@ -171,7 +171,7 @@ async def play(ctx, youtube_url):
         await ctx.send("再生したの")
         return
 
-    if not youtube_url == ""
+    if not youtube_url == "":
         await ctx.send("URLが指定されていないの")
         return
     else:
