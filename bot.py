@@ -10,57 +10,18 @@ import asyncio
 import youtube_dl
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
-# BOT_TOKEN = os.environ['TOKEN']
+BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 cogs = [
     'cogs.help',
     'cogs.miyako',
-    'cogs.slot'
+    'cogs.slot',
+    'cogs.music'
     ]
 # cogs.help = helpコマンド
 # cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
 # cogs.slot = slotコマンド
-
-ytdl_format_options = {
-    'format': 'bestaudio/best',
-    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-    'restrictfilenames': True,
-    'noplaylist': True,
-    'nocheckcertificate': True,
-    'ignoreerrors': False,
-    'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
-    'default_search': 'auto',
-    'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
-}
-
-ffmpeg_options = {
-    'options': '-vn'
-}
-
-ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
-
-class YTDLSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.5):
-        super().__init__(source, volume)
-
-        self.data = data
-
-        self.title = data.get('title')
-        self.url = data.get('url')
-
-    @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
-        loop = loop or asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
-
-        if 'entries' in data:
-            # take first item from a playlist
-            data = data['entries'][0]
-
-        filename = data['url'] if stream else ytdl.prepare_filename(data)
-        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+# cogs.music = music test
 
 for cog in cogs:
     try:
@@ -153,22 +114,6 @@ async def on_reaction_add(reaction,user):
     else:
         pass
 
-@bot.command(aliases=["connect","summon"]) #connectやsummonでも呼び出せる
-async def join(ctx):
-    """Botをボイスチャンネルに入室させます。"""
-    voice_state = ctx.author.voice
-
-    if (not voice_state) or (not voice_state.channel):
-        await ctx.send("オマエが先にボイスチャンネルに入っている必要があるの")
-        return
-
-    channel = voice_state.channel
-
-    await channel.connect()
-    await ctx.send("入ったの～")
-    print("connected to:",channel.name)
-
-
 @bot.command(aliases=["disconnect","bye"])
 async def leave(ctx):
     """Botをボイスチャンネルから切断します。"""
@@ -180,45 +125,6 @@ async def leave(ctx):
 
     await voice_client.disconnect()
     await ctx.send("ボイスチャンネルから切断したの")
-
-
-@bot.group(invoke_without_command=True)
-async def play(ctx, youtube_url):
-    """指定された音声ファイルを流します。"""
-    voice_client = ctx.message.guild.voice_client
-    voice_state = ctx.author.voice
-    channel = voice_state.channel
-    url = ctx.message.content.replace("m!play","")
-    print(youtube_url)
-
-    # botがボイスチャンネルに接続していない場合
-    if not voice_client:
-        # 自分がボイスチャンネルに接続していない場合
-        if (not voice_state) or (not voice_state.channel):
-            await ctx.send("オマエが先にボイスチャンネルに入っている必要があるの")
-            return
-        # 接続
-        await channel.connect()
-
-    # mp3を再生する場合
-    if youtube_url == "mp3":
-        await ctx.message.attachments[0].save("tmp.mp3")
-        ffmpeg_audio_source = discord.FFmpegPCMAudio("tmp.mp3")
-        voice_client.play(ffmpeg_audio_source)
-        await ctx.send("再生したの")
-        return
-
-    # URL先をDLして再生
-    if not youtube_url == "":
-        player = await YTDLSource.from_url(url, loop=bot.loop)
-        ctx.voice_client.play(player)
-        return
-
-    if not ctx.message.attachments:
-        await ctx.send("ファイルが添付されてないの")
-        return
-    else:
-        return
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -232,6 +138,5 @@ async def on_command_error(ctx, error):
     embed.add_field(name="発生エラー", value=error, inline=False)
     m = await bot.get_channel(ch).send(embed=embed)
     await ctx.send(f"エラーが出たの")
-
 
 bot.run(BOT_TOKEN)
