@@ -10,7 +10,7 @@ import asyncio
 import youtube_dl
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
-BOT_TOKEN = os.environ['TOKEN']
+# BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 cogs = [
     'cogs.help',
