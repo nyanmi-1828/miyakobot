@@ -208,6 +208,26 @@ class Music(commands.Cog):
             source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
 
         await player.queue.put(source)
+    
+    @commands.command(aliases=['singmp3','playmp3'])
+    async def mp3(self, ctx, *, search: str):
+        await ctx.trigger_typing()
+
+        vc = ctx.voice_client
+
+        if not vc:
+            await ctx.invoke(self.connect_)
+
+        player = self.get_player(ctx)
+
+        try:
+            async with timeout(5):
+                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=True)
+        except:
+            source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
+
+        await player.queue.put(source)
+        return
 
     @commands.command()
     async def loop(self, ctx):
