@@ -327,19 +327,20 @@ class Music(commands.Cog):
     async def leave(self, ctx):
         vc = ctx.voice_client
         vo_client = ctx.message.guild.voice_client
-        if not vc or or not vc.is_connected():
+
+        if not vc or not vc.is_connected():
             await ctx.send("ミヤコはこのサーバーのボイスチャンネルに参加してないの！")
             return
 
         player = self.get_player(ctx)
-        while player.queue.empty():
+        while not player.queue.empty():
             vc.stop()
         
-        await ffmpeg_audio_source = discord.FFmpegPCMAudio('./mp3/disconnect.mp3')
+        ffmpeg_audio_source = discord.FFmpegPCMAudio('./mp3/disconnect.mp3')
         vo_client.play(ffmpeg_audio_source)
             
         try:
-            wait = await bot.wait_for(timeout = 4.0)
+            wait = await ctx.bot.wait_for('reaction_add' , timeout = 3.5)
         except asyncio.TimeoutError:
             await vo_client.disconnect()
             await ctx.send("ボイスチャンネルから切断したの")
