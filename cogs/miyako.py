@@ -27,18 +27,16 @@ class Miyako(commands.Cog):
         await msg.add_reaction('🍮')
 
     @commands.command()
-    async def speak(self,ctx):
+    async def speak(self, ctx):
         voice_client = ctx.message.guild.voice_client
+        channel = voice_state.channel
         global mp3_s_list
         mp3_s = random.choice(mp3_s_list)
-
         if not voice_client:
-            await ctx.send("ボイスチャンネルに入ってないと使えないコマンドなの") 
-            return
-        else:
-            ffmpeg_audio_source = discord.FFmpegPCMAudio(mp3_s)
-            voice_client.play(ffmpeg_audio_source)
-            return
+            await channel.connect()
+        
+        ffmpeg_audio_source = discord.FFmpegPCMAudio(mp3_s)
+        voice_client.play(ffmpeg_audio_source)
 
     @commands.command()
     async def joubutsu(self,ctx):

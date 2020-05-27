@@ -114,18 +114,6 @@ async def on_reaction_add(reaction,user):
     else:
         pass
 
-@bot.command(aliases=["disconnect","bye"])
-async def leave(ctx):
-    """Botをボイスチャンネルから切断します。"""
-    voice_client = ctx.message.guild.voice_client
-
-    if not voice_client:
-        await ctx.send("ミヤコはこのサーバーのボイスチャンネルに参加してないの")
-        return
-
-    await voice_client.disconnect()
-    await ctx.send("ボイスチャンネルから切断したの")
-
 @bot.event
 async def on_command_error(ctx, error):
     ch = 713459691153391707

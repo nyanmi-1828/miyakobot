@@ -190,7 +190,7 @@ class Music(commands.Cog):
 
         await ctx.send(f'**{channel}** に入ったの～')
 
-    @commands.command(name='play', aliases=['sing'])
+    @commands.command(name='play', aliases=['sing','p'])
     async def play_(self, ctx, *, search: str):
         await ctx.trigger_typing()
 
@@ -208,22 +208,6 @@ class Music(commands.Cog):
             source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
 
         await player.queue.put(source)
-    
-    @commands.command(aliases=['singmp3','playmp3'])
-    async def mp3(self, ctx):
-        await ctx.trigger_typing()
-
-        vc = ctx.voice_client
-
-        if not vc:
-            await ctx.invoke(self.connect_)
-
-        player = self.get_player(ctx)
-        await ctx.message.attachments[0].save("tmp.mp3")
-        source = discord.FFmpegPCMAudio("tmp.mp3")
-
-        await player.queue.put(source)
-        return
 
     @commands.command()
     async def loop(self, ctx):
@@ -337,7 +321,31 @@ class Music(commands.Cog):
             return await ctx.send('何も再生してないの！')
 
         await self.cleanup(ctx.guild)
+        await ctx.send("ボイスチャンネルから切断したの")
 
+    @commands.command(aliases=["disconnect","bye"])
+    async def leave(self, ctx):
+        vc = ctx.voice_client
+        vo_client = ctx.message.guild.voice_client
+        if not vc or or not vc.is_connected():
+            await ctx.send("ミヤコはこのサーバーのボイスチャンネルに参加してないの！")
+            return
+
+        player = self.get_player(ctx)
+        while player.queue.empty():
+            vc.stop()
+        
+        await ffmpeg_audio_source = discord.FFmpegPCMAudio('./mp3/disconnect.mp3')
+        vo_client.play(ffmpeg_audio_source)
+            
+        try:
+            wait = await bot.wait_for(timeout = 4.0)
+        except asyncio.TimeoutError:
+            await vo_client.disconnect()
+            await ctx.send("ボイスチャンネルから切断したの")
+
+
+        
 
 def setup(bot):
     bot.add_cog(Music(bot))

@@ -16,6 +16,7 @@ class Help(commands.Cog):
             embed.add_field(name="**m!pudding**", value="プリンのレシピを貼るの 早く作れなの", inline=False) 
             embed.add_field(name="**m!omikuji**", value="オマエの運勢を占ってやるの", inline=False) 
             embed.add_field(name="**m!slot**", value="スロットが出来るの プリンが大当たりなの～♪", inline=False) 
+            embed.add_field(name="**m!play**", value="m!play [URL]で音楽が流せるの youtubeと音雲さんだけなの", inline=False) 
             embed.add_field(name="**m!joubutsu**", value="や、やめてなの…", inline=False) 
             await ctx.send(embed=embed)
 
