@@ -168,6 +168,9 @@ class Music(commands.Cog):
     @commands.command(name='connect', aliases=['join'])
     async def connect_(self, ctx, *, channel: discord.VoiceChannel = None):
         if not channel:
+            if not ctx.guild:
+                raise commands.NoPrivateMessage
+                return
             try:
                 channel = ctx.author.voice.channel
             except AttributeError:
@@ -185,7 +188,7 @@ class Music(commands.Cog):
                     await ctx.send(f'**{channel}** に入ったの～')
                     return
                 except asyncio.TimeoutError:
-                    raise VoiceConnectionError(f'<{channel}> に移動しようとしたけどタイムアウトしたの')
+                    await ctx.send('<{channel}> に移動しようとしたけどタイムアウトしたの')
                     return
         else:
             if not channel == None:
@@ -194,7 +197,7 @@ class Music(commands.Cog):
                     await ctx.send(f'**{channel}** に入ったの～')
                     return
                 except asyncio.TimeoutError:
-                    raise VoiceConnectionError(f'<{channel}> に接続しようとしたけどタイムアウトしたの')
+                    await ctx.send('<{channel}> に接続しようとしたけどタイムアウトしたの')
                     return
 
     @commands.command(name='play', aliases=['sing','p'])
