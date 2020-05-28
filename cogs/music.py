@@ -172,6 +172,7 @@ class Music(commands.Cog):
                 channel = ctx.author.voice.channel
             except AttributeError:
                 await ctx.send('オマエがボイスチャンネルに先に入る必要があるの！あるいは指定してなの')
+                return
 
         vc = ctx.voice_client
 
@@ -181,16 +182,20 @@ class Music(commands.Cog):
             if not channel == None:
                 try:
                     await vc.move_to(channel)
+                    await ctx.send(f'**{channel}** に入ったの～')
+                    return
                 except asyncio.TimeoutError:
                     raise VoiceConnectionError(f'<{channel}> に移動しようとしたけどタイムアウトしたの')
+                    return
         else:
             if not channel == None:
                 try:
                     await channel.connect()
+                    await ctx.send(f'**{channel}** に入ったの～')
+                    return
                 except asyncio.TimeoutError:
                     raise VoiceConnectionError(f'<{channel}> に接続しようとしたけどタイムアウトしたの')
-
-        await ctx.send(f'**{channel}** に入ったの～')
+                    return
 
     @commands.command(name='play', aliases=['sing','p'])
     async def play_(self, ctx, *, search: str):
