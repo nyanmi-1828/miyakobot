@@ -171,7 +171,7 @@ class Music(commands.Cog):
             try:
                 channel = ctx.author.voice.channel
             except AttributeError:
-                raise InvalidVoiceChannel('オマエがボイスチャンネルに先に入る必要があるの！あるいは指定してなの')
+                await ctx.send('オマエがボイスチャンネルに先に入る必要があるの！あるいは指定してなの')
 
         vc = ctx.voice_client
 
