@@ -178,15 +178,17 @@ class Music(commands.Cog):
         if vc:
             if vc.channel.id == channel.id:
                 return
-            try:
-                await vc.move_to(channel)
-            except asyncio.TimeoutError:
-                raise VoiceConnectionError(f'<{channel}> に移動しようとしたけどタイムアウトしたの')
+            if not channel == None:
+                try:
+                    await vc.move_to(channel)
+                except asyncio.TimeoutError:
+                    raise VoiceConnectionError(f'<{channel}> に移動しようとしたけどタイムアウトしたの')
         else:
-            try:
-                await channel.connect()
-            except asyncio.TimeoutError:
-                raise VoiceConnectionError(f'<{channel}> に接続しようとしたけどタイムアウトしたの')
+            if not channel == None:
+                try:
+                    await channel.connect()
+                except asyncio.TimeoutError:
+                    raise VoiceConnectionError(f'<{channel}> に接続しようとしたけどタイムアウトしたの')
 
         await ctx.send(f'**{channel}** に入ったの～')
 
