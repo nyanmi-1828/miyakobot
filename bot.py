@@ -92,7 +92,7 @@ async def imgsend(ctx):
         return msg.author == ctx.message.author and msg.attachments
 
     receive_msg = await ctx.bot.wait_for('message',check=check)
-    await ctx.message.attachments[0].save("image.png")
+    await ctx.message.attachments.save("image.png")
     cha = 720140997765496912
     img = "image.png"
     await ctx.bot.get_channel(cha).send(file=discord.File(img))
