@@ -10,7 +10,7 @@ import asyncio
 import youtube_dl
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
-BOT_TOKEN = os.environ['TOKEN']
+#BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 cogs = [
     'cogs.help',
@@ -92,7 +92,7 @@ async def imgsend(ctx):
         return msg.author == ctx.message.author and msg.attachments
 
     receive_msg = await ctx.bot.wait_for('message',check=check)
-    await ctx.message.attachments.save("image.png")
+    await ctx.message.attachments[0].save("image.png")
     cha = 720140997765496912
     img = "image.png"
     await ctx.bot.get_channel(cha).send(file=discord.File(img))
