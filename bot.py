@@ -55,6 +55,12 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Game(name="m!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
 
+def download_img(url, file_name):
+    r = requests.get(url, stream=True)
+    if r.status_code == 200:
+        with open(file_name, 'wb') as f:
+            f.write(r.content)
+
 @bot.event
 async def on_message(message):
     if message.content.startswith("m!"):
@@ -63,6 +69,12 @@ async def on_message(message):
     else:
         if message.author.bot:
             return
+        if ctx.message.attachments:
+            filename = message.attachments[0]['filename']
+            download_img(message.attachments[0]['url'], "image.png")
+            cha = 720140997765496912
+            img = "image.png"
+            await bot.get_channel(cha).send(file=discord.File(img))
         if '🍮' in message.content:
             await message.channel.send('でっかいプリンなの！いただきますなの～♪')
     await bot.process_commands(message)
