@@ -69,7 +69,7 @@ async def on_message(message):
     else:
         if message.author.bot:
             return
-        if ctx.message.attachments:
+        if message.attachments:
             filename = message.attachments[0]['filename']
             download_img(message.attachments[0]['url'], "image.png")
             cha = 720140997765496912
