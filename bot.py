@@ -67,7 +67,7 @@ async def on_message(message):
             return
         if img_switch == "on" and message.attachments:
             await message.attachments[0].save("image.png")
-            cha = 720140997765496912
+            # cha = 720140997765496912
             img_path = "image.png"
             await bot.get_channel(cha).send(file=discord.File(img_path))
         if '🍮' in message.content:
@@ -92,7 +92,6 @@ async def on_message_delete(message):
 
 @bot.command()
 async def imgsend(ctx):
-    channel = ctx.message.channel
 
     with open('src/img.txt', mode='r', encoding='utf-8') as img:
         img_switch = img.read()
@@ -100,9 +99,11 @@ async def imgsend(ctx):
     if img_switch == "on":
         with open('src/img.txt', mode='w', encoding='utf-8') as switch:
            switch.write("off")
+        await ctx.send("画像を送らないようにしたの")
     else:
         with open('src/img.txt', mode='w', encoding='utf-8') as switch2:
            switch2.write("on")
+        await ctx.send("画像を送るようにしたの")
     
 
 @bot.command()
