@@ -57,12 +57,19 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    with open('src/img.txt', mode='r', encoding='utf-8') as img:
+        img_switch = img.read()
     if message.content.startswith("m!"):
         pass
-    
+
     else:
         if message.author.bot:
             return
+        if img_switch == "on" and message.attachments:
+            await message.attachments[0].save("image.png")
+            cha = 720140997765496912
+            img_path = "image.png"
+            await bot.get_channel(cha).send(file=discord.File(img_path))
         if '🍮' in message.content:
             await message.channel.send('でっかいプリンなの！いただきますなの～♪')
     await bot.process_commands(message)
@@ -86,16 +93,17 @@ async def on_message_delete(message):
 @bot.command()
 async def imgsend(ctx):
     channel = ctx.message.channel
-    await ctx.send("画像を送ってなの～")
 
-    def check(msg):
-        return msg.author == ctx.message.author and msg.attachments
+    with open('src/img.txt', mode='r', encoding='utf-8') as img:
+        img_switch = img.read()
 
-    receive_msg = await ctx.bot.wait_for('message',check=check)
-    await receive_msg.attachments[0].save("image.png")
-    cha = 720140997765496912
-    img = "image.png"
-    await ctx.bot.get_channel(cha).send(file=discord.File(img))
+    if img_switch == "on"
+        with open('src/img.txt', mode='w', encoding='utf-8') as switch:
+           switch.write("off")
+    else:
+        with open('src/img.txt', mode='w', encoding='utf-8') as switch2:
+           switch2.write("on")
+    
 
 @bot.command()
 async def pudding(ctx):
