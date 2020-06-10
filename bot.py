@@ -61,13 +61,13 @@ async def on_message(message):
         img_switch = img.read()
     if message.content.startswith("m!"):
         pass
-
+    
     else:
         if message.author.bot:
             return
-        if img_switch == "on" and message.attachments:
+        if img_switch == "on" and message.attachments and message.guild == "心晴(こはる)荘" and message.channel == "聞き専の方はこちら":
             await message.attachments[0].save("image.png")
-            # cha = 720140997765496912
+            cha = 720140997765496912
             img_path = "image.png"
             await bot.get_channel(cha).send(file=discord.File(img_path))
         if '🍮' in message.content:
@@ -100,10 +100,12 @@ async def imgsend(ctx):
         with open('src/img.txt', mode='w', encoding='utf-8') as switch:
            switch.write("off")
         await ctx.send("画像を送らないようにしたの")
+        return 
     else:
         with open('src/img.txt', mode='w', encoding='utf-8') as switch2:
            switch2.write("on")
         await ctx.send("画像を送るようにしたの")
+        return
     
 
 @bot.command()
