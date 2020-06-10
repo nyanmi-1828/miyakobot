@@ -59,13 +59,14 @@ async def on_ready():
 async def on_message(message):
     with open('src/img.txt', mode='r', encoding='utf-8') as img:
         img_switch = img.read()
+    print(message.channel.id)
     if message.content.startswith("m!"):
         pass
     
     else:
         if message.author.bot:
             return
-        if img_switch == "on" and message.attachments and message.guild == "心晴(こはる)荘" and message.channel == "聞き専の方はこちら":
+        if img_switch == "on" and message.attachments and message.channel.id == 715651349454389308:
             await message.attachments[0].save("image.png")
             cha = 720140997765496912
             img_path = "image.png"
