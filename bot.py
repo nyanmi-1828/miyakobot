@@ -97,7 +97,7 @@ async def imgsend(ctx):
     with open('src/img.txt', mode='r', encoding='utf-8') as img:
         img_switch = img.read()
 
-    if img_switch == "on"
+    if img_switch == "on":
         with open('src/img.txt', mode='w', encoding='utf-8') as switch:
            switch.write("off")
     else:
