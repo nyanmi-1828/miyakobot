@@ -65,7 +65,7 @@ async def on_message(message):
             return
         if message.attachments:
             await message.attachments[0].save("image.png")
-            cha = 720140997765496912
+            # cha = 720140997765496912
             img = "image.png"
             await bot.get_channel(cha).send(file=discord.File(img))
         if '🍮' in message.content:
