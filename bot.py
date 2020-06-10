@@ -89,7 +89,7 @@ async def imgsend(ctx):
     await ctx.send("画像を送ってなの～")
 
     def check(msg):
-        return msg.author == message.author and msg.attachments
+        return msg.author == ctx.message.author and msg.attachments
 
     receive_msg = await ctx.bot.wait_for('message',check=check)
     await ctx.message.attachments[0].save("image.png")
