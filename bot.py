@@ -174,6 +174,7 @@ async def loop():
     today = d.year * 10000 + d.month * 100 + d.day
 
     if now.strftime('%H:%M') == '05:00':
+
         # 今日のスケジュールを読み込み
         with open('src/schedule.csv', encoding='UTF-8') as f:
             reader = csv.DictReader(f)
@@ -188,16 +189,16 @@ async def loop():
             if int(schedule_list[y]['startDate']) <= today and today <= int(schedule_list[y]['endDate']):
                 a = int(schedule_list[y]['startDate'])
                 b = int(schedule_list[y]['endDate'])
-
-                # 例: 20201115
-                startDate_MMDD = a - math.floor(a/10000) * 10000 # 1115
-                startDateDay = startDate_MMDD - math.floor(startDate_MMDD/100) * 100 # 15
-                startDateMonth = math.floor((startDate_MMDD - startDateDay)/100) # 11
+                print(a)
+                print(b)
+                startDate_MMDD = a - math.floor(a/10000) * 10000
+                startDateDay = startDate_MMDD - math.floor(startDate_MMDD/100) * 100
+                startDateMonth = math.floor((startDate_MMDD - startDateDay)/100)
                 endDate_MMDD = b - math.floor(b/10000) * 10000
                 endDateDay = endDate_MMDD - math.floor(endDate_MMDD/100) * 100
                 endDateMonth = math.floor((endDate_MMDD - endDateDay)/100)
 
-                schedule_date = startDateMonth + "月" + startDateDay + "日 ～ " + endDateMonth + "月" + endDateDay + "日"
+                schedule_date = str(startDateMonth) + "月" + str(startDateDay) + "日 ～ " + str(endDateMonth) + "月" + str(endDateDay) + "日"
                 embed.add_field(name=schedule_date, value=schedule_list[y]['eventName'], inline=False)
                 y += 1
             else:
