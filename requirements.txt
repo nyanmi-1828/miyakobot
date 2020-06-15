@@ -4,3 +4,5 @@ discord.py[voice]
 pynacl
 youtube_dl
 pytz
+dropbox
+matplotlib

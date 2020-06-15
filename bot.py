@@ -12,8 +12,12 @@ import datetime
 import pytz
 import csv
 import math
+import dropbox
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
+dbxtoken = os.environ['dbxtoken']
+dbx = dropbox.Dropbox(dbxtoken)
+dbx.users_get_current_account()
 BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 cogs = [
@@ -116,8 +120,10 @@ async def imgsend(ctx):
 async def setschedule(ctx):
     channel = '\n' + str(ctx.channel.id)
     print(channel)
+    uploadpath_channel = "/schedule_channel.txt"
+    dbx.files_download_to_file('src/schedule_channel.txt', uploadpath_channel, rev=None)
     with open('src/schedule_channel.txt', mode='a', encoding='utf-8') as channel_set:
-        channel_set.write(channel)
+        dbx.files_upload(channel_set.write(channel), uploadpath_channel, mode=dropbox.files.WriteMode.overwrite)
     await ctx.send("このチャンネルにスケジュールを送るようにしたの！")
 
 @bot.command()
@@ -205,6 +211,8 @@ async def loop():
                 y += 1
 
         # 吐き出し
+        uploadpath_channel = "/schedule_channel.txt"
+        dbx.files_download_to_file('src/schedule_channel.txt', uploadpath_channel, rev=None)
         with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as schedule_channel:
             channel_list = schedule_channel.read().split('\n')
         n = 0
