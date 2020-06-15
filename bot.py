@@ -8,6 +8,10 @@ import io
 import aiohttp
 import asyncio
 import youtube_dl
+import datetime
+import pytz
+import csv
+import math
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
 BOT_TOKEN = os.environ['TOKEN']
@@ -21,7 +25,7 @@ cogs = [
 # cogs.help = helpコマンド
 # cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
 # cogs.slot = slotコマンド
-# cogs.music = music test
+# cogs.music = music系コマンド　俺には分からん
 
 for cog in cogs:
     try:
@@ -54,12 +58,12 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(activity=discord.Game(name="m!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
+    loop.start()
 
 @bot.event
 async def on_message(message):
     with open('src/img.txt', mode='r', encoding='utf-8') as img:
         img_switch = img.read()
-    print(message.channel.id)
     if message.content.startswith("m!"):
         pass
     
@@ -108,6 +112,13 @@ async def imgsend(ctx):
         await ctx.send("画像を送るようにしたの")
         return
     
+@bot.command()
+async def setschedule(ctx):
+    channel = '\n' + str(ctx.channel.id)
+    print(channel)
+    with open('src/schedule_channel.txt', mode='a', encoding='utf-8') as channel_set:
+        channel_set.write(channel)
+    await ctx.send("このチャンネルにスケジュールを送るようにしたの！")
 
 @bot.command()
 async def pudding(ctx):
@@ -151,6 +162,56 @@ async def on_command_error(ctx, error):
     embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
     embed.add_field(name="発生エラー", value=error, inline=False)
     await bot.get_channel(ch).send(embed=embed)
-    await ctx.send(f"エラーが出たの")
+    await ctx.send("エラーが出たの")
+
+@tasks.loop(seconds=60)
+async def loop():
+    await bot.wait_until_ready()
+    now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
+    print(now.strftime('%H:%M'))
+
+    d = datetime.date.today()
+    today = d.year * 10000 + d.month * 100 + d.day
+
+    if now.strftime('%H:%M') == '05:00':
+        # 今日のスケジュールを読み込み
+        with open('src/schedule.csv', encoding='UTF-8') as f:
+            reader = csv.DictReader(f)
+            schedule_list = [row for row in reader]
+        print(schedule_list)
+        # 今日の日付をYYYYMMDD形式で取得→int型に変換
+        y = 0
+        x = 0 
+        embed = discord.Embed(title="スケジュール", description="忘れずにやるの～", color=0x00ffff)
+        # startDate,endDateは"YYYYMMDD"で書く
+        for x in schedule_list:
+            if int(schedule_list[y]['startDate']) <= today and today <= int(schedule_list[y]['endDate']):
+                a = int(schedule_list[y]['startDate'])
+                b = int(schedule_list[y]['endDate'])
+
+                # 例: 20201115
+                startDate_MMDD = a - math.floor(a/10000) * 10000 # 1115
+                startDateDay = startDate_MMDD - math.floor(startDate_MMDD/100) * 100 # 15
+                startDateMonth = math.floor((startDate_MMDD - startDateDay)/100) # 11
+                endDate_MMDD = b - math.floor(b/10000) * 10000
+                endDateDay = endDate_MMDD - math.floor(endDate_MMDD/100) * 100
+                endDateMonth = math.floor((endDate_MMDD - endDateDay)/100)
+
+                schedule_date = startDateMonth + "月" + startDateDay + "日 ～ " + endDateMonth + "月" + endDateDay + "日"
+                embed.add_field(name=schedule_date, value=schedule_list[y]['eventName'], inline=False)
+                y += 1
+            else:
+                y += 1
+
+        # 吐き出し
+        with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as schedule_channel:
+            channel_list = schedule_channel.read().split('\n')
+        n = 0
+        i = 0
+        for i in channel_list:
+            ch = int(channel_list[n])
+            await bot.get_channel(ch).send("おはようなの～♪今日のスケジュールはこれ！なの！")
+            await bot.get_channel(ch).send(embed=embed)
+            n += 1
 
 bot.run(BOT_TOKEN)
