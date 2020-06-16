@@ -186,7 +186,7 @@ async def on_reaction_add(reaction,user):
     if user.bot == False and reaction.emoji == "🍮" and purin_value < 10:
         purin_value += 1
         await reaction.message.channel.send(miya_talk)
-    elif purin_value == 10:
+    elif purin_value == 10 and reaction.emoji == "🍮":
         await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
         purin_value = 0
     else:
