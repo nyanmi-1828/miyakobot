@@ -118,14 +118,49 @@ async def imgsend(ctx):
     
 @bot.command()
 async def setschedule(ctx):
-    channel = '\n' + str(ctx.channel.id)
+    channel_write = '\n' + str(ctx.channel.id)
+    channel = str(ctx.channel.id)
     print(channel)
-    uploadpath_channel = "/schedule_channel.txt"
+    
+    uploadpath_channel = "/miyakobot/schedule_channel.txt"
     dbx.files_download_to_file('src/schedule_channel.txt', uploadpath_channel, rev=None)
-    with open('src/schedule_channel.txt', mode='a', encoding='utf-8') as channel_set:
-        dbx.files_upload(channel_set.write(channel), uploadpath_channel, mode=dropbox.files.WriteMode.overwrite)
-    await ctx.send("このチャンネルにスケジュールを送るようにしたの！")
-
+    with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as cha:
+        channel_list = cha.read().split('\n')
+    
+    if channel in channel_list:
+        await ctx.send("もうこのチャンネルに送るよう設定されてるの！")
+        return
+    else:
+        with open('src/schedule_channel.txt', mode='a', encoding='utf-8') as channel_set:
+            channel_set.write(channel_write)
+        with open('src/schedule_channel.txt', 'rb') as f:
+            dbx.files_upload(f.read(), uploadpath_channel, mode=dropbox.files.WriteMode.overwrite)
+        await ctx.send("このチャンネルにスケジュールを送るようにしたの！")
+        
+@bot.command()
+async def setscheduledelete(ctx):
+    channel_write = '\n' + str(ctx.channel.id)
+    channel = str(ctx.channel.id)
+    print(channel)
+    
+    uploadpath_channel = "/miyakobot/schedule_channel.txt"
+    dbx.files_download_to_file('src/schedule_channel.txt', uploadpath_channel, rev=None)
+    with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as cha:
+        channel_list = cha.read().split('\n')
+    
+    if channel in channel_list:
+        channel_list.remove(channel)
+        s = '\n'.join(channel_list)
+        with open('src/schedule_channel.txt', mode='w', encoding='utf-8') as channel_set:
+            channel_set.write(s)
+        with open('src/schedule_channel.txt', 'rb') as f:
+            dbx.files_upload(f.read(), uploadpath_channel, mode=dropbox.files.WriteMode.overwrite)
+        await ctx.send("このチャンネルに送らないようにしたの～")
+        return
+    else:
+        await ctx.send("このチャンネルに送るようには設定されてないの！")
+        return
+    
 @bot.command()
 async def pudding(ctx):
     purin = random.choice(recipe_list)
@@ -148,10 +183,10 @@ async def on_reaction_add(reaction,user):
     global purin_value
     print(purin_value)
     miya_talk = random.choice(talk_list)
-    if user.bot == False and reaction.emoji == "🍮" and purin_value < 15:
+    if user.bot == False and reaction.emoji == "🍮" and purin_value < 10:
         purin_value += 1
         await reaction.message.channel.send(miya_talk)
-    elif purin_value == 15:
+    elif purin_value == 10:
         await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
         purin_value = 0
     else:
@@ -211,7 +246,7 @@ async def loop():
                 y += 1
 
         # 吐き出し
-        uploadpath_channel = "/schedule_channel.txt"
+        uploadpath_channel = "/miyakobot/schedule_channel.txt"
         dbx.files_download_to_file('src/schedule_channel.txt', uploadpath_channel, rev=None)
         with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as schedule_channel:
             channel_list = schedule_channel.read().split('\n')
