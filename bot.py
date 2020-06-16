@@ -13,6 +13,7 @@ import pytz
 import csv
 import math
 import dropbox
+import string
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
 dbxtoken = os.environ['dbxtoken']
@@ -54,6 +55,10 @@ with open('src/talk.txt', mode='r', encoding='utf-8') as talk:
 with open('src/nsfw.txt', mode='r', encoding='utf-8') as nsfw:
     nsfw_list = nsfw.read().split('\n')
 
+def randomname(n):
+   randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
+   return ''.join(randlst)
+
 @bot.event
 async def on_ready():
     
@@ -75,10 +80,11 @@ async def on_message(message):
         if message.author.bot:
             return
         if img_switch == "on" and message.attachments and message.channel.id == 715651349454389308:
-            await message.attachments[0].save("image.png")
             cha = 720140997765496912
-            img_path = "image.png"
+            img_path = "img_" + randomname(8) + ".png"
+            await message.attachments[0].save(img_path)
             await bot.get_channel(cha).send(file=discord.File(img_path))
+            os.remove(img_path)
         if '🍮' in message.content:
             await message.channel.send('でっかいプリンなの！いただきますなの～♪')
     await bot.process_commands(message)
