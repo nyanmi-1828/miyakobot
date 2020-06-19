@@ -362,7 +362,7 @@ def image_check(file_path):
         result_list.append(k)
 
     printname_old = result_list[0]
-    printname = printname_old.replace('./data/save\\', '').replace('.jpg', '')
+    printname = printname_old.replace('./data/save/', '').replace('.jpg', '')
     print(printname)
     arena_chara_list.append(printname)
 
@@ -422,7 +422,9 @@ async def arena(ctx):
     image_check("p4")
     image_check("p5")
 
-    await ctx.send(arena_chara_list)
+    chara_output = ','.join(arena_chara_list)
+    await ctx.send(chara_output)
     arena_chara_list.clear()
+    chara_output = None
 
 bot.run(BOT_TOKEN)
