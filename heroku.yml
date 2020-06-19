@@ -3,5 +3,5 @@ build:
     - python
   packages:
     - libopencv-dev
-run:
-  web: discordbot: python bot.py
+run: 
+  discordbot: python bot.py
