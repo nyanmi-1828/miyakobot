@@ -15,3 +15,5 @@ flake8-docstrings
 flake8-polyfill
 pbr
 opencv-contrib-python
+opencv-python-headless
+opencv-contrib-python-headless
