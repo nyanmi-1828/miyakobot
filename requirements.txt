@@ -14,6 +14,7 @@ flake8
 flake8-docstrings
 flake8-polyfill
 pbr
-opencv-contrib-python
-opencv-python-headless
-opencv-contrib-python-headless
+libsm6
+libxrender1
+libfontconfig1
+libice6
