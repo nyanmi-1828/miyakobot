@@ -25,7 +25,7 @@ import numpy as np
 import random
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
-dbxtoken = "VdMr5NWBlpAAAAAAAAAAK6kogTk-u39SuhlfLTbpqQsdyK_BFPURRqnipfLmYKiw"#os.environ['dbxtoken']
+dbxtoken = os.environ['dbxtoken']
 dbx = dropbox.Dropbox(dbxtoken)
 dbx.users_get_current_account()
 BOT_TOKEN = os.environ['TOKEN']
