@@ -6,3 +6,11 @@ youtube_dl
 pytz
 dropbox
 matplotlib
+pandas
+opencv-python
+pillow
+docopt
+flake8
+flake8-docstrings
+flake8-polyfill
+pbr
