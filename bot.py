@@ -34,10 +34,10 @@ dbx.users_get_current_account()
 BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-dbx.files_download_to_file('src/miyakobot-spreadsheet.json', '/miyakobot/miyakobot-spreadsheet-be65bb649a23.json', rev=None)
+dbx.files_download_to_file('src/miyakobot-spreadsheet.json', '/miyakobot/miyakobot-spreadsheet-f0f4058290d2.json', rev=None)
 credentials = ServiceAccountCredentials.from_json_keyfile_name('src/miyakobot-spreadsheet.json', scope)
 gc = gspread.authorize(credentials)
-SPREADSHEET_KEY = '1zuj1fM55zHpVTne7Wp_CZkrnbhhq0kPL4p_O3g61qCg'
+SPREADSHEET_KEY = os.environ['SpreadSheet']
 worksheet = gc.open_by_key(SPREADSHEET_KEY).sheet1
 cogs = [
     'cogs.help',
