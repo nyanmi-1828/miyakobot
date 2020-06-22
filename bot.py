@@ -225,7 +225,7 @@ async def loop():
     now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
     print(now.strftime('%H:%M'))
 
-    d = datetime.date.today()
+    d = datetime.date.today('Asia/Tokyo')
     today = d.year * 10000 + d.month * 100 + d.day
 
     if now.strftime('%H:%M') == '05:00':
@@ -365,11 +365,6 @@ def image_check(file_path):
     printname = printname_old.replace('./data/save/', '').replace('.jpg', '')
     print(printname)
     arena_chara_list.append(printname)
-
-@bot.command()
-async def arena_tes(ctx):
-    img_path = "data/image/arena_test.jpg"
-    await ctx.message.attachments[0].save(img_path)
 
 # botのコマンド部分
 @bot.command()
