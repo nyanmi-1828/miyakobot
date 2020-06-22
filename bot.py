@@ -23,6 +23,9 @@ from statistics import mean
 from PIL import Image
 import numpy as np
 import random
+import json
+from oauth2client.service_account import ServiceAccountCredentials
+import gspread
 
 bot = commands.Bot(command_prefix='m!',help_command=None)
 dbxtoken = os.environ['dbxtoken']
@@ -30,6 +33,12 @@ dbx = dropbox.Dropbox(dbxtoken)
 dbx.users_get_current_account()
 BOT_TOKEN = os.environ['TOKEN']
 purin_value = 0
+scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+dbx.files_download_to_file('src/miyakobot-spreadsheet.json', '/miyakobot/miyakobot-spreadsheet-be65bb649a23.json', rev=None)
+credentials = ServiceAccountCredentials.from_json_keyfile_name('src/miyakobot-spreadsheet.json', scope)
+gc = gspread.authorize(credentials)
+SPREADSHEET_KEY = '1zuj1fM55zHpVTne7Wp_CZkrnbhhq0kPL4p_O3g61qCg'
+worksheet = gc.open_by_key(SPREADSHEET_KEY).sheet1
 cogs = [
     'cogs.help',
     'cogs.miyako',
@@ -63,6 +72,8 @@ with open('src/talk.txt', mode='r', encoding='utf-8') as talk:
 # 秘密なの
 with open('src/nsfw.txt', mode='r', encoding='utf-8') as nsfw:
     nsfw_list = nsfw.read().split('\n')
+
+# ------------------------------↑前処理↑----------------------------------
 
 def randomname(n):
    randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
@@ -114,7 +125,7 @@ async def on_message_delete(message):
     if '🍮' in message.content:
         await message.channel.send('プリン返せなの～！')
 
-@bot.command()
+@bot.command(aliases=['i'])
 async def imgsend(ctx):
 
     with open('src/img.txt', mode='r', encoding='utf-8') as img:
@@ -219,21 +230,19 @@ async def on_command_error(ctx, error):
     await bot.get_channel(ch).send(embed=embed)
     await ctx.send("エラーが出たの")
 
+
+
 @tasks.loop(seconds=60)
 async def loop():
     await bot.wait_until_ready()
     now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
     print(now.strftime('%H:%M'))
-
-    d = datetime.date.today('Asia/Tokyo')
-    today = d.year * 10000 + d.month * 100 + d.day
+    today = now.year * 10000 + now.month * 100 + now.day
 
     if now.strftime('%H:%M') == '05:00':
 
         # 今日のスケジュールを読み込み
-        with open('src/schedule.csv', encoding='UTF-8') as f:
-            reader = csv.DictReader(f)
-            schedule_list = [row for row in reader]
+        schedule_list = worksheet.get_all_records(empty2zero=False, head=1, default_blank='')
         print(schedule_list)
         # 今日の日付をYYYYMMDD形式で取得→int型に変換
         y = 0
@@ -270,7 +279,7 @@ async def loop():
             await bot.get_channel(ch).send(embed=embed)
             n += 1
 
-# -------------------------------------ここから下画像処理用------------------------------------------------
+# -----------------------------------ここから下画像処理用--------------------------------
 
 # ----------------データ格納場--------------------
 arena_chara_list = []
