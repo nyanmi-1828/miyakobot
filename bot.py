@@ -440,7 +440,7 @@ async def arena(ctx):
     # 出力、判定用にまとめ
     chara_l = []
     for n in arena_chara_list:
-        chara_l.append(chara_list[arena_chara_list])
+        chara_l.append(chara_list[arena_chara_list(n)])
     chara_output = '、'.join(chara_l)
     
     # シートから編成を取得
