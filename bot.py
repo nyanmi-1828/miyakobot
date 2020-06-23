@@ -439,8 +439,10 @@ async def arena(ctx):
     
     # 出力、判定用にまとめ
     chara_l = []
+    t = 0
     for n in arena_chara_list:
-        chara_l.append(chara_list[arena_chara_list[n]])
+        chara_l.append(chara_list[arena_chara_list[t]])
+        t += 1
     chara_output = '、'.join(chara_l)
     
     # シートから編成を取得
@@ -450,8 +452,10 @@ async def arena(ctx):
 
     # 取得した編成を一つにまとめる
     chara_counter = []
+    y = 0
     for l in range(len(attack_index)):
-        chara_counter.append(attack_index[l])
+        chara_counter.append(attack_index[y])
+        y += 1
     chara_counter_output = '\n'.join(chara_counter)
 
     if len(attack_index) == 0:
