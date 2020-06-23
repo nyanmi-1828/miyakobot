@@ -3,7 +3,6 @@ import discord
 import traceback
 import random
 import os
-from discord.ext import commands
 import io
 import aiohttp
 import asyncio
@@ -22,7 +21,6 @@ import sys
 from statistics import mean
 from PIL import Image
 import numpy as np
-import random
 import json
 from oauth2client.service_account import ServiceAccountCredentials
 import gspread
@@ -38,7 +36,9 @@ dbx.files_download_to_file('src/miyakobot-spreadsheet.json', '/miyakobot/miyakob
 credentials = ServiceAccountCredentials.from_json_keyfile_name('src/miyakobot-spreadsheet.json', scope)
 gc = gspread.authorize(credentials)
 SPREADSHEET_KEY = os.environ['SpreadSheet']
+SPREADSHEET_KEY2 = os.environ['SpreadSheet2']
 worksheet = gc.open_by_key(SPREADSHEET_KEY).sheet1
+worksheet2 = gc.open_by_key(SPREADSHEET_KEY2).sheet1
 cogs = [
     'cogs.help',
     'cogs.miyako',
@@ -76,8 +76,8 @@ with open('src/nsfw.txt', mode='r', encoding='utf-8') as nsfw:
 # ------------------------------↑前処理↑----------------------------------
 
 def randomname(n):
-   randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
-   return ''.join(randlst)
+    randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
+    return ''.join(randlst)
 
 @bot.event
 async def on_ready():
@@ -133,12 +133,12 @@ async def imgsend(ctx):
 
     if img_switch == "on":
         with open('src/img.txt', mode='w', encoding='utf-8') as switch:
-           switch.write("off")
+            switch.write("off")
         await ctx.send("画像を送らないようにしたの")
         return 
     else:
         with open('src/img.txt', mode='w', encoding='utf-8') as switch2:
-           switch2.write("on")
+            switch2.write("on")
         await ctx.send("画像を送るようにしたの")
         return
     
@@ -288,7 +288,14 @@ size_list = {
     'xperia':{'y1':436, 'y2':556, 'x':[[1939,2060],[2067,2190],[2197,2318],[2327,2448],[2456,2576]]},\
     'Widescreen':{'y1':327, 'y2':416, 'x':[[1335,1424],[1431,1522],[1528,1618],[1625,1715],[1722,1811]]},\
     'iPad':{'y1':541, 'y2':636, 'x':[[1424,1519],[1527,1623],[1631,1726],[1733,1828],[1837,1932]]}
-            }
+}
+chara_list = {
+    'aoi':'アオイ','hiyori':'ヒヨリ','io':'イオ','kaori_summer':'水着カオリ','kasumi_magical':'カスミ（マジカル）',\
+    'kokkoro':'コッコロ','kurumi':'クルミ','kuuka':'クウカ','kyaru':'キャル','maho':'マホ',\
+    'nozomi_christmas':'ノゾミ（クリスマス）','pecorine':'ペコリーヌ','pecorine_summer':'水着ペコリーヌ',\
+    'rei_newyear':'正月レイ','rima':'リマ','rino':'リノ','saren_summer':'水着サレン',\
+    'shinobu_halloween':'シノブ（ハロウィン）','tsumugi':'ツムギ','yukari':'ユカリ','yuki':'ユキ'
+}
 
 # 画像比率分析用
 Xr = round(1792/828, 2)
@@ -375,6 +382,10 @@ def image_check(file_path):
     print(printname)
     arena_chara_list.append(printname)
 
+# 複数の要素番号を取得
+def my_index_multi(l, x):
+    return [i for i, _x in enumerate(l) if _x == x]
+
 # botのコマンド部分
 @bot.command()
 async def arena(ctx):
@@ -425,9 +436,29 @@ async def arena(ctx):
     image_check("p3")
     image_check("p4")
     image_check("p5")
+    
+    # 出力、判定用にまとめ
+    chara_l = []
+    for n in arena_chara_list:
+        chara_l.append(chara_list[arena_chara_list])
+    chara_output = '、'.join(chara_l)
+    
+    # シートから編成を取得
+    attackers = worksheet2.col_values(1)
+    defenders = worksheet2.col_values(2)
+    attack_index = my_index_multi(defenders, chara_output)
 
-    chara_output = ','.join(arena_chara_list)
-    await ctx.send(chara_output)
+    # 取得した編成を一つにまとめる
+    chara_counter = []
+    for l in range(len(attack_index)):
+        chara_counter.append(attack_index[l])
+    chara_counter_output = '\n'.join(chara_counter)
+
+    if len(attack_index) == 0:
+        await ctx.send(f"```{chara_output}``` に勝てる編成が見つからなかったの…")
+    else:
+        await ctx.send(f'```{chara_output}``` に勝てそうな編成が{len(attack_index)} つ見つかったの！\n ```{chara_counter_output}``` で勝てると思うの！"')
+
     arena_chara_list.clear()
     chara_output = None
 
