@@ -295,7 +295,7 @@ chara_list = {
     'nozomi_christmas':'ノゾミ（クリスマス）','pecorine':'ペコリーヌ','pecorine_summer':'水着ペコリーヌ',\
     'rei_newyear':'正月レイ','rima':'リマ','rino':'リノ','saren_summer':'水着サレン',\
     'shinobu_halloween':'シノブ（ハロウィン）','tsumugi':'ツムギ','yukari':'ユカリ','yuki':'ユキ',\
-    'tamaki':'タマキ','rin_deremas':'リン（デレマス）'.'pecorine_princess':'ペコリーヌ（プリンセス）'
+    'tamaki':'タマキ','rin_deremas':'リン（デレマス）','pecorine_princess':'ペコリーヌ（プリンセス）'
 }
 
 # 画像比率分析用
@@ -379,7 +379,7 @@ def image_check(file_path):
         result_list.append(k)
 
     printname_old = result_list[0]
-    printname = printname_old.replace('./data/save/', '').replace('.jpg', '')
+    printname = printname_old.replace('./data/save\\', '').replace('.jpg', '')
     print(printname)
     arena_chara_list.append(printname)
 
@@ -455,14 +455,14 @@ async def arena(ctx):
     chara_counter = []
     y = 0
     for l in range(len(attack_index)):
-        chara_counter.append(attack_index[y])
+        chara_counter.append(attackers[attack_index[y]])
         y += 1
     chara_counter_output = '\n'.join(chara_counter)
 
     if len(attack_index) == 0:
         await ctx.send(f"```{chara_output}``` に勝てる編成が見つからなかったの…")
     else:
-        await ctx.send(f'```{chara_output}``` に勝てそうな編成が{len(attack_index)} つ見つかったの！\n ```{chara_counter_output}``` で勝てると思うの！"')
+        await ctx.send(f'```{chara_output}``` に勝てそうな編成が{len(attack_index)} つ見つかったの！```{chara_counter_output}``` で勝てると思うの！')
 
     arena_chara_list.clear()
     chara_output = None
