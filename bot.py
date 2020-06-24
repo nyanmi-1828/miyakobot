@@ -379,7 +379,7 @@ def image_check(file_path):
         result_list.append(k)
 
     printname_old = result_list[0]
-    printname = printname_old.replace('./data/save\\', '').replace('.jpg', '')
+    printname = printname_old.replace('./data/save/', '').replace('.jpg', '')
     print(printname)
     arena_chara_list.append(printname)
 
