@@ -419,6 +419,8 @@ async def arena(ctx):
         keys = keys_list[0]
     except IndexError:
         await ctx.send("画像が対応してない比率なの…")
+    else:
+        keys = keys_list[0]
 
     # 多解像度対応用に変換
     resize_width = width_list[keys]
