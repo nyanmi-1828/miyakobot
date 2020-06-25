@@ -35,7 +35,7 @@ class Help(commands.Cog):
             await msg.add_reaction("▶")
             
             def check(reaction, user):
-                return user == message.author and (str(reaction.emoji) == '◀' or str(reaction.emoji) == '▶')
+                return user == msg.author and (str(reaction.emoji) == '◀' or str(reaction.emoji) == '▶')
             
             while i == 0:
                 try:
