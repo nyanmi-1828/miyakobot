@@ -36,7 +36,7 @@ class Help(commands.Cog):
             def check(reaction, user):
                 return user == message.author and (str(reaction.emoji) == '◀' or str(reaction.emoji) == '▶')
             
-            while i = 0:
+            while i == 0:
                 try:
                     reaction, user = await ctx.bot.wait_for('reaction_add', timeout=60.0, check=check)
                 except asyncio.TimeoutError:
