@@ -415,12 +415,13 @@ async def arena(ctx):
     
     # 比率から機種を判別
     keys_list = get_keys_from_value(img_shape_list, img_shape)
+
     try:
         keys = keys_list[0]
     except IndexError:
         await ctx.send("画像が対応してない比率なの…")
-    else:
-        keys = keys_list[0]
+    except UnboundLocalError:
+        await ctx.send("画像が対応してない比率なの…")
 
     # 多解像度対応用に変換
     resize_width = width_list[keys]
