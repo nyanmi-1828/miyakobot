@@ -125,6 +125,36 @@ async def on_message_delete(message):
     if '🍮' in message.content:
         await message.channel.send('プリン返せなの～！')
 
+@bot.event
+async def on_reaction_add(reaction,user):
+    global purin_value
+    miya_talk = random.choice(talk_list)
+    if user.bot == False and reaction.emoji == "🍮" and purin_value < 10:
+        print(reaction.emoji)
+        print(purin_value)
+        purin_value += 1
+        await reaction.message.channel.send(miya_talk)
+    elif purin_value == 10 and reaction.emoji == "🍮":
+        await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
+        purin_value = 0
+    else:
+        pass
+
+@bot.event
+async def on_command_error(ctx, error):
+    ch = 713459691153391707
+    embed = discord.Embed(title="エラー情報", description="", color=0xf00)
+    embed.add_field(name="エラー発生サーバー名", value=ctx.guild.name, inline=False)
+    embed.add_field(name="エラー発生サーバーID", value=ctx.guild.id, inline=False)
+    embed.add_field(name="エラー発生ユーザー名", value=ctx.author.name, inline=False)
+    embed.add_field(name="エラー発生ユーザーID", value=ctx.author.id, inline=False)
+    embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
+    embed.add_field(name="発生エラー", value=error, inline=False)
+    await bot.get_channel(ch).send(embed=embed)
+    await ctx.send("エラーが出たの")
+        
+# -------------------------------↑イベント処理↑-------------------------------
+        
 @bot.command(aliases=['i'])
 async def imgsend(ctx):
 
@@ -200,37 +230,6 @@ async def omikuji(ctx):
 async def miyakonsfw(ctx):
     nsfw_link = random.choice(nsfw_list)
     await ctx.send(nsfw_link)
-
-@bot.event
-async def on_reaction_add(reaction,user):
-    print("emoji")
-    print(reaction.emoji)
-    global purin_value
-    print(purin_value)
-    miya_talk = random.choice(talk_list)
-    if user.bot == False and reaction.emoji == "🍮" and purin_value < 10:
-        purin_value += 1
-        await reaction.message.channel.send(miya_talk)
-    elif purin_value == 10 and reaction.emoji == "🍮":
-        await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
-        purin_value = 0
-    else:
-        pass
-
-@bot.event
-async def on_command_error(ctx, error):
-    ch = 713459691153391707
-    embed = discord.Embed(title="エラー情報", description="", color=0xf00)
-    embed.add_field(name="エラー発生サーバー名", value=ctx.guild.name, inline=False)
-    embed.add_field(name="エラー発生サーバーID", value=ctx.guild.id, inline=False)
-    embed.add_field(name="エラー発生ユーザー名", value=ctx.author.name, inline=False)
-    embed.add_field(name="エラー発生ユーザーID", value=ctx.author.id, inline=False)
-    embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
-    embed.add_field(name="発生エラー", value=error, inline=False)
-    await bot.get_channel(ch).send(embed=embed)
-    await ctx.send("エラーが出たの")
-
-
 
 @tasks.loop(seconds=60)
 async def loop():
@@ -416,7 +415,10 @@ async def arena(ctx):
     
     # 比率から機種を判別
     keys_list = get_keys_from_value(img_shape_list, img_shape)
-    keys = keys_list[0]
+    try:
+        keys = keys_list[0]
+    except IndexError:
+        await ctx.send("画像が対応してない比率なの…")
 
     # 多解像度対応用に変換
     resize_width = width_list[keys]
