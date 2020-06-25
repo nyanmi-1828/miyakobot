@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import asyncio
 
 class Help(commands.Cog):
     def __init__(self, bot):
