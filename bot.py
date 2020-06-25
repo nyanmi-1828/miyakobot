@@ -295,14 +295,16 @@ chara_list = {
     'nozomi_christmas':'ノゾミ（クリスマス）','pecorine':'ペコリーヌ','pecorine_summer':'水着ペコリーヌ',\
     'rei_newyear':'正月レイ','rima':'リマ','rino':'リノ','saren_summer':'水着サレン',\
     'shinobu_halloween':'シノブ（ハロウィン）','tsumugi':'ツムギ','yukari':'ユカリ','yuki':'ユキ',\
-    'tamaki':'タマキ','rin_deremas':'リン（デレマス）','pecorine_princess':'ペコリーヌ（プリンセス）','yui':'ユイ'
+    'tamaki':'タマキ','rin_deremas':'リン（デレマス）','pecorine_princess':'ペコリーヌ（プリンセス）','yui':'ユイ',\
+    'runa':'ルナ','hatsune':'ハツネ'
 }
 
 # 画像比率分析用
 Xr = round(1792/828, 2)
+iPhone11 = round(2436/1125, 2)
 Widescreen = round(1920/1080, 2)
 iPad = round(2048/1536, 2)
-img_shape_list = {'iPhoneXr': Xr, 'xperia': 2, 'Widescreen': Widescreen, 'iPad': iPad}
+img_shape_list = {'iPhoneXr': Xr, 'iPhoneXr': iPhone11, 'xperia': 2, 'Widescreen': Widescreen, 'iPad': iPad}
 width_list = {'iPhoneXr': 1792, 'xperia': 2880, 'Widescreen': 1920, 'iPad': 2048}
 im = None
 # ----------------データ格納場--------------------
