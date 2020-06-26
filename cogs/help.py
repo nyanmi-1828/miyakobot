@@ -11,6 +11,7 @@ class Help(commands.Cog):
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(title="ヘルプ", description="コマンド一覧なの", color=0x00ffff)
             embed.add_field(name="**m!help**", value="コマンドの説明を表示するの m!help [コマンド名]で各コマンドの詳しい説明をしてやるの", inline=False) 
+            embed.add_field(name="**ここを見るとわかりやすいの**", value="https://github.com/nyanmi-1828/miyakobot", inline=False) 
             embed.add_field(name="**m!miyako**", value="ミヤコの画像を表示するの かわいいの", inline=False) 
             embed.add_field(name="**m!miyakor18**", value="サイテーなの ケーベツしたの", inline=False) 
             embed.add_field(name="**m!talk**", value="喋らないの プリン🍮をくれたら喋っても良いの", inline=False) 
