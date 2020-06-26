@@ -151,7 +151,7 @@ async def on_command_error(ctx, error):
     embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
     embed.add_field(name="発生エラー", value=error, inline=False)
     await bot.get_channel(ch).send(embed=embed)
-    await ctx.send("エラーが出たの")
+    await ctx.send(f"エラーが出たの エラー名:{error}")
         
 # -------------------------------↑イベント処理↑-------------------------------
         
