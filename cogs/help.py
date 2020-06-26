@@ -22,7 +22,6 @@ class Help(commands.Cog):
             embed.add_field(name="**m!speak**", value="ミヤコが喋るの（未実装）", inline=False)
             embed.add_field(name="**m!leave**", value="ボイスチャンネルから切断するの ｽｰｰｰ…", inline=False)
             embed.add_field(name="**m!play**", value="m!play [URL]で音楽が流せるの 細かい説明はm!help playで見るの", inline=False)
-            embed.add_field(name="**m!joubutsu**", value="ぶ、VCに入ってるとミヤコの声が聞こえるの…でもやめてなの…", inline=False)
             embed.add_field(name="**m!setschedule**", value="ミヤコが毎日のスケジュールをこのコマンドを打ったチャンネルに貼ってやるの", inline=False)
             embed.add_field(name="**m!setscheduledelete**", value="上のコマンドで設定したチャンネルに送らなくなるの", inline=False)
             embed.add_field(name="**m!arena**", value="バトルアリーナの対抗編成を出してやるの", inline=False)
