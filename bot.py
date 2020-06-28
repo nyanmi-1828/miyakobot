@@ -86,7 +86,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(activity=discord.Game(name="m!helpでヘルプが見れるの めんどくさいから一回で覚えろなの"))
+    await bot.change_presence(activity=discord.Game(name="m!helpでヘルプが見れるの 分からないことがあればm!faqを使うの"))
     loop.start()
 
 @bot.event
@@ -143,7 +143,7 @@ async def on_reaction_add(reaction,user):
 @bot.event
 async def on_command_error(ctx, error):
     ch = 713459691153391707
-    embed = discord.Embed(title="エラー情報", description="", color=0xf00)
+    embed = discord.Embed(title="エラー情報", description="", color=0x00ffff)
     embed.add_field(name="エラー発生サーバー名", value=ctx.guild.name, inline=False)
     embed.add_field(name="エラー発生サーバーID", value=ctx.guild.id, inline=False)
     embed.add_field(name="エラー発生ユーザー名", value=ctx.author.name, inline=False)
@@ -151,10 +151,20 @@ async def on_command_error(ctx, error):
     embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
     embed.add_field(name="発生エラー", value=error, inline=False)
     await bot.get_channel(ch).send(embed=embed)
-    await ctx.send(f"エラーが出たの エラー名:{error}")
+    await ctx.send(f"エラーが出たの エラー名:```{error}```")
         
 # -------------------------------↑イベント処理↑-------------------------------
-        
+# -------------------------------↓コマンド処理↓-------------------------------       
+
+@bot.command()
+async def faq(ctx):
+    embed = discord.Embed(title="よくある質問や出来事なの", description="詳しいことはここに書いてあるの: https://github.com/nyanmi-1828/miyakobot", color=0x00ffff)
+    embed.add_field(name="エラーが出るの？", value=\
+        "良かったら起こった状況とエラー名を管理者(Discord: nyanmi-1828#7675 Twitter: @nyanmi_23のDMに送ってほしいの)", inline=False)
+    embed.add_field(name="m!arenaで出るキャラが間違ってるの？", value="開発段階だから許してなの 間違った時の画像を送ってなの", inline=False)
+    embed.add_field(name="m!arenaの使い方が分からないの？", value="https://github.com/nyanmi-1828/miyakobot を見てほしいの…", inline=False)
+    await ctx.send(embed=embed)
+
 @bot.command(aliases=['i'])
 async def imgsend(ctx):
 
@@ -420,11 +430,12 @@ async def arena(ctx):
         keys = keys_list[0]
     except IndexError:
         await ctx.send("画像が対応してない比率なの…")
-    except UnboundLocalError:
-        await ctx.send("画像が対応してない比率なの…")
 
     # 多解像度対応用に変換
-    resize_width = width_list[keys]
+    try:
+        resize_width = width_list[keys]
+    except UnboundLocalError:
+        await ctx.send("画像が対応してない比率なの…")
     resize_height = resize_width / img_width * img_height
     img = cv2.resize(img,(int(resize_width),int(resize_height)))
     cv2.imwrite(img_path,img)
