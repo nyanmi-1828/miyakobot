@@ -247,7 +247,6 @@ async def loop():
     now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
     print(now.strftime('%H:%M'))
     today = now.year * 10000 + now.month * 100 + now.day
-    print(channel_list)
     if now.strftime('%H:%M') == '05:00':
 
         # 今日のスケジュールを読み込み
