@@ -430,12 +430,14 @@ async def arena(ctx):
         keys = keys_list[0]
     except IndexError:
         await ctx.send("画像が対応してない比率なの…")
+        return
 
     # 多解像度対応用に変換
     try:
         resize_width = width_list[keys]
-    except UnboundLocalError:
+    except UnboundLocalError as e:
         await ctx.send("画像が対応してない比率なの…")
+        return
     resize_height = resize_width / img_width * img_height
     img = cv2.resize(img,(int(resize_width),int(resize_height)))
     cv2.imwrite(img_path,img)
