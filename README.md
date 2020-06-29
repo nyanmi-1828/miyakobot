@@ -1,5 +1,6 @@
 # miyakobot
 プリコネRに登場する「ミヤコ（出雲宮子）」の非公式未公認botです　ネタ系botを作りたかったので作りました
+bot招待リンク→（ https://discord.com/api/oauth2/authorize?client_id=711371885300023356&permissions=3205184&scope=bot ）
 ## 目次
 * [出来ること](#出来ること)
 * [使い方（コマンド一覧）](#使い方コマンド一覧)
@@ -7,6 +8,14 @@
 * [m!arenaの詳しい使い方](#marenaの詳しい使い方)
 * [FAQ、よくある質問](#FAQよくある質問)
 * [協力いただいた方](#協力いただいた方)
+## Botに与えている権限
+- メッセージを送る権限（最低限）
+- メッセージを編集する権限（m!helpのため、また今後botの機能追加のため）
+- Embed Links（スケジュール機能のため）
+- Attach Files（m!miyakoのため）
+- Add Reactions（m!talkのため）
+- VC接続（m!playのため）
+- VC発言（同上）
 ## 出来ること
 - おみくじやスロットのネタ要素
 - 音楽再生機能（VC）
