@@ -245,7 +245,6 @@ async def miyakonsfw(ctx):
 async def loop():
     await bot.wait_until_ready()
     now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
-    print(now.strftime('%H:%M'))
     today = now.year * 10000 + now.month * 100 + now.day
     if now.strftime('%H:%M') == '05:00':
 
