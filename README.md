@@ -86,9 +86,9 @@ urlのところをyoutubeまたはsoundcloudのリンクにすると、自分の
 - maguro869様 - プログラム協力
 - ポンズ様 - m!arena実装協力
 ## 緊急連絡先
-開発者のにゃんみーまでDMなどでご連絡ください。
-Discord: nyanmi-1828#7675
-Twitter: @nyanmi_23
-
-他ゲームのDMでも反応できます。
+開発者のにゃんみーまでDMなどでご連絡ください。<br>
+Discord: nyanmi-1828#7675<br>
+Twitter: @nyanmi_23<br>
+<br>
+他ゲームのDMでも反応できます。<br>
 osu!: nyanmi-1828
