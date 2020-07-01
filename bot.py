@@ -303,7 +303,8 @@ chara_list = {
     'rei_newyear':'正月レイ','rima':'リマ','rino':'リノ','saren_summer':'水着サレン',\
     'shinobu_halloween':'シノブ（ハロウィン）','tsumugi':'ツムギ','yukari':'ユカリ','yuki':'ユキ',\
     'tamaki':'タマキ','rin_deremas':'リン（デレマス）','pecorine_princess':'ペコリーヌ（プリンセス）','yui':'ユイ',\
-    'runa':'ルナ','hatsune':'ハツネ','kokkoro_princess':'コッコロ（プリンセス）','mifuyu':'ミフユ','yuni':'ユニ'
+    'runa':'ルナ','hatsune':'ハツネ','kokkoro_princess':'コッコロ（プリンセス）','mifuyu':'ミフユ','yuni':'ユニ',\
+    'kuuka_ooedo':'クウカ（オーエド）'
 }
 
 # 画像比率分析用
