@@ -304,7 +304,7 @@ chara_list = {
     'shinobu_halloween':'シノブ（ハロウィン）','tsumugi':'ツムギ','yukari':'ユカリ','yuki':'ユキ',\
     'tamaki':'タマキ','rin_deremas':'リン（デレマス）','pecorine_princess':'ペコリーヌ（プリンセス）','yui':'ユイ',\
     'runa':'ルナ','hatsune':'ハツネ','kokkoro_princess':'コッコロ（プリンセス）','mifuyu':'ミフユ','yuni':'ユニ',\
-    'kuuka_ooedo':'クウカ（オーエド）'
+    'kuuka_ooedo':'クウカ（オーエド）','ruka':'ルカ','rin':'リン','ayumi':'アユミ'
 }
 
 # 画像比率分析用
