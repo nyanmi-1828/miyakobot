@@ -254,7 +254,7 @@ async def loop():
         # 今日の日付をYYYYMMDD形式で取得→int型に変換
         embed = discord.Embed(title="**スケジュール**", description="忘れずにやるの～", color=0x00ffff)
         # startDate,endDateは"YYYYMMDD"で書く
-        for x in schedule_list:
+        for x in range(len(schedule_list)):
             if int(schedule_list[x]['startDate']) <= today and today <= int(schedule_list[x]['endDate']):
                 a = int(schedule_list[x]['startDate'])
                 b = int(schedule_list[x]['endDate'])
@@ -433,7 +433,7 @@ async def arena(ctx):
     # 多解像度対応用に変換
     try:
         resize_width = width_list[keys]
-    except UnboundLocalError as e:
+    except UnboundLocalError:
         await ctx.send("画像が対応してない比率なの…")
         return
     resize_height = resize_width / img_width * img_height
