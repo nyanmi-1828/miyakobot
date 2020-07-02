@@ -252,13 +252,12 @@ async def loop():
         schedule_list = worksheet.get_all_records(empty2zero=False, head=1, default_blank='')
         print(schedule_list)
         # 今日の日付をYYYYMMDD形式で取得→int型に変換
-        y = 0
         embed = discord.Embed(title="**スケジュール**", description="忘れずにやるの～", color=0x00ffff)
         # startDate,endDateは"YYYYMMDD"で書く
         for x in schedule_list:
-            if int(schedule_list[y]['startDate']) <= today and today <= int(schedule_list[y]['endDate']):
-                a = int(schedule_list[y]['startDate'])
-                b = int(schedule_list[y]['endDate'])
+            if int(schedule_list[x]['startDate']) <= today and today <= int(schedule_list[x]['endDate']):
+                a = int(schedule_list[x]['startDate'])
+                b = int(schedule_list[x]['endDate'])
                 print(a)
                 print(b)
                 startDate_MMDD = a - math.floor(a/10000) * 10000
@@ -269,22 +268,23 @@ async def loop():
                 endDateMonth = math.floor((endDate_MMDD - endDateDay)/100)
 
                 schedule_date = str(startDateMonth) + "月" + str(startDateDay) + "日 ～ " + str(endDateMonth) + "月" + str(endDateDay) + "日"
-                embed.add_field(name=schedule_date, value=schedule_list[y]['eventName'], inline=False)
-                y += 1
-            else:
-                y += 1
+                embed.add_field(name=schedule_date, value=schedule_list[x]['eventName'], inline=False)
 
         # 吐き出し
+        channel_list = []
         uploadpath_channel = "/miyakobot/schedule_channel.txt"
-        dbx.files_download_to_file('src/schedule_channel.txt', uploadpath_channel, rev=None)
-        with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as schedule_channel:
-            channel_list = schedule_channel.read().split('\n')
-        n = 0
+        with open('src/schedule_channel.txt', mode='wb') as schedule_channel:
+            metadata, res = dbx.files_download(path=uploadpath_channel)
+            schedule_channel.write(res.content)
+        with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as sc    
+            channel_list = sc.read().split('\n')
+            
         for i in channel_list:
-            ch = int(channel_list[n])
+            ch = int(channel_list[i])
             await bot.get_channel(ch).send("おはようなの～♪今日のスケジュールはこれ！なの！")
             await bot.get_channel(ch).send(embed=embed)
-            n += 1
+        
+        channel_list.clear()
 
 # -----------------------------------ここから下画像処理用--------------------------------
 
