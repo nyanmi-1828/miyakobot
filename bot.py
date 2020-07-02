@@ -277,10 +277,9 @@ async def loop():
             metadata, res = dbx.files_download(path=uploadpath_channel)
             schedule_channel.write(res.content)
         with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as sc:
-            channel_list = sc.read().split('\n')
+            channel_list = map(int,sc.read().split('\n'))
             
-        for i in channel_list:
-            ch = int(channel_list[i])
+        for ch in channel_list:
             await bot.get_channel(ch).send("おはようなの～♪今日のスケジュールはこれ！なの！")
             await bot.get_channel(ch).send(embed=embed)
         
