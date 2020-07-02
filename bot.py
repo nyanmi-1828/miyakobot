@@ -276,7 +276,7 @@ async def loop():
         with open('src/schedule_channel.txt', mode='wb') as schedule_channel:
             metadata, res = dbx.files_download(path=uploadpath_channel)
             schedule_channel.write(res.content)
-        with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as sc    
+        with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as sc:
             channel_list = sc.read().split('\n')
             
         for i in channel_list:
