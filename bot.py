@@ -254,7 +254,8 @@ async def loop():
         # 今日の日付をYYYYMMDD形式で取得→int型に変換
         embed = discord.Embed(title="**スケジュール**", description="忘れずにやるの～", color=0x00ffff)
         # startDate,endDateは"YYYYMMDD"で書く
-        for x in range(len(schedule_list)):
+        x = 0
+        for y in range(len(schedule_list)):
             if int(schedule_list[x]['startDate']) <= today and today <= int(schedule_list[x]['endDate']):
                 a = int(schedule_list[x]['startDate'])
                 b = int(schedule_list[x]['endDate'])
@@ -269,6 +270,8 @@ async def loop():
 
                 schedule_date = str(startDateMonth) + "月" + str(startDateDay) + "日 ～ " + str(endDateMonth) + "月" + str(endDateDay) + "日"
                 embed.add_field(name=schedule_date, value=schedule_list[x]['eventName'], inline=False)
+                
+            x += 0
 
         # 吐き出し
         channel_list = []
