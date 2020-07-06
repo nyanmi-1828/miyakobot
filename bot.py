@@ -228,17 +228,10 @@ async def setscheduledelete(ctx):
 
 @bot.command()
 async def schedule(ctx):
-    channel_list = []
-    uploadpath_channel = "/miyakobot/schedule_channel.txt"
-    with open('src/schedule_channel.txt', mode='wb') as schedule_channel:
-        metadata, res = dbx.files_download(path=uploadpath_channel)
-        schedule_channel.write(res.content)
-    with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as sc:
-        channel_list = map(int,sc.read().split('\n'))
-
-    await ctx.send(list(channel_list))
-
-    channel_list.clear()
+    channel_list = [729525353168502816,729525381450694676,729525405492576256,729525434525679660]
+    
+    for ch in channel_list:
+        await bot.get_channel(ch).send("おはようなの～♪今日のスケジュールはこれ！なの！")
 
 @bot.command()
 async def pudding(ctx):
