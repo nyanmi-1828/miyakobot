@@ -225,7 +225,21 @@ async def setscheduledelete(ctx):
     else:
         await ctx.send("このチャンネルに送るようには設定されてないの！")
         return
-    
+
+@bot.command()
+async def schedule(ctx):
+    channel_list = []
+    uploadpath_channel = "/miyakobot/schedule_channel.txt"
+    with open('src/schedule_channel.txt', mode='wb') as schedule_channel:
+        metadata, res = dbx.files_download(path=uploadpath_channel)
+        schedule_channel.write(res.content)
+    with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as sc:
+        channel_list = map(int,sc.read().split('\n'))
+
+    await ctx.send(channel_list)
+
+    channel_list.clear()
+
 @bot.command()
 async def pudding(ctx):
     purin = random.choice(recipe_list)
@@ -271,7 +285,7 @@ async def loop():
                 schedule_date = str(startDateMonth) + "月" + str(startDateDay) + "日 ～ " + str(endDateMonth) + "月" + str(endDateDay) + "日"
                 embed.add_field(name=schedule_date, value=schedule_list[x]['eventName'], inline=False)
                 
-            x += 0
+            x += 1
 
         # 吐き出し
         channel_list = []
