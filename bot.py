@@ -236,7 +236,7 @@ async def schedule(ctx):
     with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as sc:
         channel_list = map(int,sc.read().split('\n'))
 
-    await ctx.send(channel_list)
+    await ctx.send(list(channel_list))
 
     channel_list.clear()
 
