@@ -227,13 +227,6 @@ async def setscheduledelete(ctx):
         return
 
 @bot.command()
-async def schedule(ctx):
-    channel_list = [729525353168502816,729525381450694676,729525405492576256,729525434525679660]
-    
-    for ch in channel_list:
-        await bot.get_channel(ch).send("おはようなの～♪今日のスケジュールはこれ！なの！")
-
-@bot.command()
 async def pudding(ctx):
     purin = random.choice(recipe_list)
     await ctx.send(purin)
@@ -248,6 +241,8 @@ async def miyakonsfw(ctx):
     nsfw_link = random.choice(nsfw_list)
     await ctx.send(nsfw_link)
 
+
+'''
 @tasks.loop(seconds=60)
 async def loop():
     await bot.wait_until_ready()
@@ -281,20 +276,21 @@ async def loop():
             x += 1
 
         # 吐き出し
+        
         channel_list = []
         uploadpath_channel = "/miyakobot/schedule_channel.txt"
         with open('src/schedule_channel.txt', mode='wb') as schedule_channel:
             metadata, res = dbx.files_download(path=uploadpath_channel)
             schedule_channel.write(res.content)
         with open('src/schedule_channel.txt', mode='r', encoding='utf-8') as sc:
-            channel_list = map(int,sc.read().split('\n'))
+            channel_list = list(map(int,sc.read().split('\n')))
             
         for ch in channel_list:
             await bot.get_channel(ch).send("おはようなの～♪今日のスケジュールはこれ！なの！")
             await bot.get_channel(ch).send(embed=embed)
         
         channel_list.clear()
-
+'''
 # -----------------------------------ここから下画像処理用--------------------------------
 
 # ----------------データ格納場--------------------
