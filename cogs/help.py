@@ -37,7 +37,7 @@ class Help(commands.Cog):
     @_help.command()
     async def miyakor18(self,ctx):
         embed=discord.Embed(title="ヘルプ",color=0x00ffff)
-        embed.add_field(name='**m!miyakor18**',value='貼らないの！ …m!miyakonsfwでしょうがないから貼ってやるの オマエならやらないと信じてるの',inline=False)
+        embed.add_field(name='**m!miyakor18**',value='貼らないの！期待するななの',inline=False)
         await ctx.send(embed=embed)
         
     @_help.command()

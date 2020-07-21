@@ -69,10 +69,6 @@ with open('src/omikuji.txt', mode='r', encoding='utf-8') as omikuji:
 with open('src/talk.txt', mode='r', encoding='utf-8') as talk:
     talk_list = talk.read().split('\n')
 
-# 秘密なの
-with open('src/nsfw.txt', mode='r', encoding='utf-8') as nsfw:
-    nsfw_list = nsfw.read().split('\n')
-
 # ------------------------------↑前処理↑----------------------------------
 
 def randomname(n):
@@ -235,11 +231,6 @@ async def pudding(ctx):
 async def omikuji(ctx):
     omikuji = random.choice(omikuji_list)
     await ctx.send(omikuji)
-
-@bot.command()
-async def miyakonsfw(ctx):
-    nsfw_link = random.choice(nsfw_list)
-    await ctx.send(nsfw_link)
 
 
 '''
