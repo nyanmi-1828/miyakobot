@@ -4,9 +4,7 @@ import traceback
 import random
 import os
 import io
-import aiohttp
 import asyncio
-import youtube_dl
 import datetime
 import pytz
 import csv
@@ -18,7 +16,6 @@ from docopt import docopt
 import glob
 import logging
 import sys
-from statistics import mean
 from PIL import Image
 import numpy as np
 import json
@@ -43,12 +40,14 @@ cogs = [
     'cogs.help',
     'cogs.miyako',
     'cogs.slot',
-    'cogs.music'
+    'cogs.music',
+    'cogs.event'
     ]
 # cogs.help = helpコマンド
 # cogs.miyako = miyako,talk,joubutsuなど細かいコマンド
 # cogs.slot = slotコマンド
-# cogs.music = music系コマンド　俺には分からん
+# cogs.music = music系コマンド　俺には分からん（コピペなので）
+# cogs.event = event処理 on_readyとon_messageだけここにいます 
 
 for cog in cogs:
     try:
@@ -64,10 +63,6 @@ with open('src/pudding_recipe.txt', mode='r', encoding='utf-8') as recipe:
 # おみくじ一覧
 with open('src/omikuji.txt', mode='r', encoding='utf-8') as omikuji:
     omikuji_list = omikuji.read().split('\n')
-
-# 喋る言葉一覧
-with open('src/talk.txt', mode='r', encoding='utf-8') as talk:
-    talk_list = talk.read().split('\n')
 
 # ------------------------------↑前処理↑----------------------------------
 
@@ -105,49 +100,7 @@ async def on_message(message):
             await message.channel.send('でっかいプリンなの！いただきますなの～♪')
     await bot.process_commands(message)
 
-@bot.event
-async def on_message_edit(before, after):
-    if before.author.bot:
-        return
-    if '🍮' in before.content and not '🍮' in after.content:
-        await after.channel.send('プリン返せなの～！')
-    else:
-        pass
 
-@bot.event
-async def on_message_delete(message):
-    if message.author.bot:
-        return
-    if '🍮' in message.content:
-        await message.channel.send('プリン返せなの～！')
-
-@bot.event
-async def on_reaction_add(reaction,user):
-    global purin_value
-    miya_talk = random.choice(talk_list)
-    if user.bot == False and reaction.emoji == "🍮" and purin_value < 10:
-        print(reaction.emoji)
-        print(purin_value)
-        purin_value += 1
-        await reaction.message.channel.send(miya_talk)
-    elif purin_value == 10 and reaction.emoji == "🍮":
-        await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
-        purin_value = 0
-    else:
-        pass
-
-@bot.event
-async def on_command_error(ctx, error):
-    ch = 713459691153391707
-    embed = discord.Embed(title="エラー情報", description="", color=0x00ffff)
-    embed.add_field(name="エラー発生サーバー名", value=ctx.guild.name, inline=False)
-    embed.add_field(name="エラー発生サーバーID", value=ctx.guild.id, inline=False)
-    embed.add_field(name="エラー発生ユーザー名", value=ctx.author.name, inline=False)
-    embed.add_field(name="エラー発生ユーザーID", value=ctx.author.id, inline=False)
-    embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
-    embed.add_field(name="発生エラー", value=error, inline=False)
-    await bot.get_channel(ch).send(embed=embed)
-    await ctx.send(f"エラーが出たの エラー名:```{error}```")
         
 # -------------------------------↑イベント処理↑-------------------------------
 # -------------------------------↓コマンド処理↓-------------------------------       
@@ -156,7 +109,7 @@ async def on_command_error(ctx, error):
 async def faq(ctx):
     embed = discord.Embed(title="よくある質問や出来事なの", description="詳しいことはここに書いてあるの: https://github.com/nyanmi-1828/miyakobot", color=0x00ffff)
     embed.add_field(name="エラーが出るの？", value=\
-        "良かったら起こった状況とエラー名を管理者(Discord: nyanmi-1828#7675 Twitter: @nyanmi_23のDMに送ってほしいの)", inline=False)
+        "良かったら起こった状況とエラー名を管理者(Discord: nyanmi-1828#7675 Twitter: @nyanmi_23)のDMに送ってほしいの", inline=False)
     embed.add_field(name="m!arenaで出るキャラが間違ってるの？", value="開発段階だから許してなの 間違った時の画像を送ってなの", inline=False)
     embed.add_field(name="m!arenaの使い方が分からないの？", value="https://github.com/nyanmi-1828/miyakobot を見てほしいの…", inline=False)
     await ctx.send(embed=embed)
@@ -171,12 +124,10 @@ async def imgsend(ctx):
         with open('src/img.txt', mode='w', encoding='utf-8') as switch:
             switch.write("off")
         await ctx.send("画像を送らないようにしたの")
-        return 
     else:
         with open('src/img.txt', mode='w', encoding='utf-8') as switch2:
             switch2.write("on")
         await ctx.send("画像を送るようにしたの")
-        return
     
 @bot.command()
 async def setschedule(ctx):
@@ -191,7 +142,6 @@ async def setschedule(ctx):
     
     if channel in channel_list:
         await ctx.send("もうこのチャンネルに送るよう設定されてるの！")
-        return
     else:
         with open('src/schedule_channel.txt', mode='a', encoding='utf-8') as channel_set:
             channel_set.write(channel_write)
@@ -217,10 +167,8 @@ async def setscheduledelete(ctx):
         with open('src/schedule_channel.txt', 'rb') as f:
             dbx.files_upload(f.read(), uploadpath_channel, mode=dropbox.files.WriteMode.overwrite)
         await ctx.send("このチャンネルに送らないようにしたの～")
-        return
     else:
         await ctx.send("このチャンネルに送るようには設定されてないの！")
-        return
 
 @bot.command()
 async def pudding(ctx):
@@ -233,6 +181,7 @@ async def omikuji(ctx):
     await ctx.send(omikuji)
 
 
+# 今
 '''
 @tasks.loop(seconds=60)
 async def loop():
@@ -311,6 +260,7 @@ iPad = round(2048/1536, 2)
 img_shape_list = {'iPhoneXr': Xr, 'iPhoneXr': iPhone11, 'xperia': 2, 'Widescreen': Widescreen, 'iPad': iPad}
 width_list = {'iPhoneXr': 1792, 'xperia': 2880, 'Widescreen': 1920, 'iPad': 2048}
 im = None
+
 # ----------------データ格納場--------------------
 
 # 値から辞書型リストのキーを取得
@@ -371,7 +321,6 @@ class Imagehashmanager(object):
         if other is None:
             return False
         if not isinstance(other, Imagehashmanager):
-            # ここ1次元ではない場合大丈夫か?
             return not np.array_equal(self.hash.flatten(), other)
         else:
             return not np.array_equal(self.hash.flatten(), other.hash.flatten())
@@ -508,10 +457,8 @@ async def arena(ctx):
     
     # 出力、判定用にまとめ
     chara_l = []
-    t = 0
     for n in arena_chara_list:
-        chara_l.append(chara_list[arena_chara_list[t]])
-        t += 1
+        chara_l.append(chara_list[n])
     chara_output = '、'.join(chara_l)
     
     # シートから編成を取得
