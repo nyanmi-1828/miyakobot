@@ -329,12 +329,98 @@ def cropping(x1,y1,x2,y2,name):
     img = cv2.resize(img,img_size)
     cv2.imwrite(img_path,img)
 
+class Imagehashmanager(object):
+    """
+    imageハッシュ同士の比較や辞書のキーに使える
+    """
+    
+    def __init__(self, binary_array: np.ndarray):
+        self.hash = binary_array
+    
+    def __str__(self):
+        return _binary_array_to_hex(self.hash.flatten())
+    
+    def __repr__(self):
+        return repr(self.hash)
+    
+    def __sub__(self, other):
+        if other is None:
+            raise TypeError('Other hash must not be None.')
+        if isinstance(other, Imagehashmanager):
+            if self.hash.size != other.hash.size:
+                raise TypeError('ImageHashes must be of the same shape.', self.hash.shape, other.hash.shape)
+            return np.count_nonzero(self.hash.flatten() != other.hash.flatten())
+        elif isinstance(other, np.ndarray):
+            if self.hash.size != other.size:
+                raise TypeError('ImageHashes must be of the same shape.', self.hash.shape, other.shape)
+            return np.count_nonzero(self.hash.flatten() != other.flatten())
+        else:
+            raise TypeError(f'Other Invalid type:{type(other)}')
+    
+    def __eq__(self, other):
+        if other is None:
+            return False
+        if isinstance(other, Imagehashmanager):
+            return np.array_equal(self.hash.flatten(), other.hash.flatten())
+        elif isinstance(other, np.ndarray):
+            return np.array_equal(self.hash.flatten(), other.flatten())
+        else:
+            raise TypeError(f'Other Invalid type:{type(other)}')
+    
+    def __ne__(self, other):
+        if other is None:
+            return False
+        if not isinstance(other, Imagehashmanager):
+            # ここ1次元ではない場合大丈夫か?
+            return not np.array_equal(self.hash.flatten(), other)
+        else:
+            return not np.array_equal(self.hash.flatten(), other.hash.flatten())
+    
+    def __hash__(self):
+        # this returns a 8 bit integer, intentionally shortening the information
+        return sum([2 ** (i % 8) for i, v in enumerate(self.hash.flatten()) if v])
+        # long ver
+        # return sum([2 ** i for (i, v) in enumerate(self.hash.flatten()) if v])
+        
+def dhash(image: np.ndarray, hashsize: int = 8):
+    """
+    8x8 = 64[bit]
+    Difference Hash computation.
+    following http://www.hackerfactor.com/blog/index.php?/archives/529-Kind-of-Like-That.html
+
+    computes differences horizontally
+    """
+    assert image.shape[-1] in (1, 3)  # グレイスケールまたはRGBではない場合エラー、下のコードでもよい
+    #     raise RuntimeError(f"Unknown format: shape={image.shape}")
+    if hashsize < 2:
+        raise ValueError("Hash size must be greater than or equal to 2")
+    img = cv2.resize(image, (hashsize + 1, hashsize), interpolation=cv2.INTER_AREA)  # リサイズ
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if image.shape[2] == 3 else img  # 上の行と順番逆でもいいかも
+    
+    resized = np.asarray(img)
+    # compute the (relative) horizontal gradient between adjacent
+    # column pixels
+    diff = resized[:, 1:] > resized[:, :-1]
+    
+    # 念の為
+    diff = np.asarray(diff, dtype=bool)
+    return Imagehashmanager(diff)
+
+hash_list = []
+pattern = '%s/*.jpg'
+comparing_dir_path = './data/save/'
+comparing_files = glob.glob(pattern % (comparing_dir_path))
+for comparing_file in comparing_files:
+    img = cv2.imread(comparing_file)
+    hash = dhash(img)
+    hash_list.append(hash)
+
 # 画像認識
 def image_check(file_path):
     global arena_chara_list
+    printname = ''
     # get parameters
     target_file_path = './data/crop/arena_pillow_crop_' + file_path + '.jpg'
-    comparing_dir_path = './data/save/'
 
     # setting
     img_size = (66, 64)
@@ -344,49 +430,16 @@ def image_check(file_path):
     ranges = (0, 256)
     ret = {}
 
-    # get comparing files
-    pattern = '%s/*.jpg'
-    comparing_files = glob.glob(pattern % (comparing_dir_path))
-    if len(comparing_files) == 0:
-        logging.error('no files.')
-
     # read target image
-    target_file_name = os.path.basename(target_file_path)
     target_img = cv2.imread(target_file_path)
     target_img = cv2.resize(target_img, img_size)
-
-    for comparing_file in comparing_files:
-        comparing_file_name = os.path.basename(comparing_file)
-
-        tmp = []
-        for channel in channels:
-            # calc hist of target image
-            target_hist = cv2.calcHist([target_img], [channel], mask, [hist_size], ranges)
-
-            # read comparing image
-            comparing_img_path = os.path.join(
-                os.path.abspath(os.path.dirname(__file__)),
-                comparing_file,
-            )
-            comparing_img = cv2.imread(comparing_img_path)
-            # calc hist of comparing image
-            comparing_hist = cv2.calcHist([comparing_img], [channel], mask, [hist_size], ranges)
-
-            # compare hist
-            tmp.append(cv2.compareHist(target_hist, comparing_hist, 0))
-
-        # mean hist
-        ret[comparing_file] = mean(tmp)
-
-    # sort
-    result_list = []
-    for k, v in sorted(ret.items(), reverse=True, key=lambda x: x[1]):
-        logging.info('%s: %f.' % (k, v))
-        result_list.append(k)
-
-    printname_old = result_list[0]
-    printname = printname_old.replace('./data/save/', '').replace('.jpg', '')
-    print(printname)
+    
+    hash = dhash(target_img)
+    min_hash_list = [hash_list[i] - hash for i in range(len(hash_list))]
+    for i in range(len(hash_list)):
+        if min_hash_list[i] == min(min_hash_list):
+            printname = comparing_files[i].replace('./data/save\\', '').replace('.jpg', '')
+    
     arena_chara_list.append(printname)
 
 # 複数の要素番号を取得
