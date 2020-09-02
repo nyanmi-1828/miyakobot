@@ -83,7 +83,7 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(activity=discord.Game(name="m!helpでヘルプが見れるの 分からないことがあればm!faqを使うの"))
-    loop.start()
+    # loop.start()
 
 @bot.event
 async def on_message(message):
