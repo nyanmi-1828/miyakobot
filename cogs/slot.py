@@ -21,6 +21,9 @@ class Casino(commands.Cog):
             "お酒が3つ揃ったの お酒が入ったお風呂は身を清められるらしいの… や、やめてなの！ミヤコを突っ込まないで欲しいの！"
             ]
         for i in range(kaisuu):
+            if kaisuu > 10:
+                await ctx.send("出来るのは10連までなの 欲張りはめっ！なの")
+                break
             A = random.choice(slot_list)
             B = random.choice(slot_list)
             C = random.choice(slot_list)
