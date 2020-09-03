@@ -154,8 +154,8 @@ class Arena_recognation(commands.Cog):
         for i in range(len(hash_list)):
             if min_hash_list[i] == min(min_hash_list):
                 printname = comparing_files[i].replace('./data/save\\', '').replace('.jpg', '')
-
-        self.arena_chara_list += printname
+                
+        self.arena_chara_list.append(printname)
 
     # 複数の要素番号を取得
     def my_index_multi(self,l, x):
@@ -191,22 +191,19 @@ class Arena_recognation(commands.Cog):
 
         receive_msg = await ctx.bot.wait_for('message',check=check)
         await receive_msg.attachments[0].save(img_path)
-
+        
         img = cv2.imread(img_path)
         img_height,img_width,_ = img.shape
 
         # 読み込んだ画像の比率
         img_shape = round(img_width/img_height, 2)
-
         # 比率から機種を判別
         keys_list = self.get_keys_from_value(img_shape_list, img_shape)
-
         try:
             keys = keys_list[0]
         except IndexError:
             await ctx.send("画像が対応してない比率なの…")
             return
-
         # 多解像度対応用に変換
         try:
             resize_width = width_list[keys]
@@ -227,10 +224,9 @@ class Arena_recognation(commands.Cog):
         self.cropping(x[2][0],y1,x[2][1],y2,"p3")
         self.cropping(x[3][0],y1,x[3][1],y2,"p4")
         self.cropping(x[4][0],y1,x[4][1],y2,"p5")
-
+        
         for i in ["p1","p2","p3","p4","p5"]:
             self.image_check(i)
-
         chara_list = {
                 'aoi':'アオイ','hiyori':'ヒヨリ','io':'イオ','kaori_summer':'水着カオリ','kasumi_magical':'カスミ（マジカル）',\
                 'kokkoro':'コッコロ','kurumi':'クルミ','kuuka':'クウカ','kyaru':'キャル','maho':'マホ',\
@@ -244,12 +240,10 @@ class Arena_recognation(commands.Cog):
         # 出力、判定用にまとめ
         chara_l = [chara_list[n] for n in self.arena_chara_list]
         chara_output = '、'.join(chara_l)
-
         # シートから編成を取得
         attackers = worksheet.col_values(1)
         defenders = worksheet.col_values(2)
         attack_index = self.my_index_multi(defenders, chara_output)
-
         # 取得した編成を一つにまとめる
         chara_counter = [attackers[attack_index[l]] for l in range(len(attack_index))]
         chara_counter_output = '\n'.join(chara_counter)
@@ -258,7 +252,6 @@ class Arena_recognation(commands.Cog):
             await ctx.send(f"```{chara_output}``` に勝てる編成が見つからなかったの…")
         else:
             await ctx.send(f'```{chara_output}``` に勝てそうな編成が{len(attack_index)} つ見つかったの！```{chara_counter_output}``` で勝てると思うの！')
-
         self.arena_chara_list.clear()
         chara_output = None
         
