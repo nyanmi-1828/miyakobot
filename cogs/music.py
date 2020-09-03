@@ -368,7 +368,5 @@ class Music(commands.Cog):
             await ctx.send("ボイスチャンネルから切断したの")
 
 
-        
-
 def setup(bot):
     bot.add_cog(Music(bot))
