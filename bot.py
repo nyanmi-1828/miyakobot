@@ -233,52 +233,6 @@ async def loop():
 '''
 # -----------------------------------ここから下画像処理用--------------------------------
 
-# ----------------データ格納場--------------------
-arena_chara_list = []
-size_list = {
-    'iPhoneXr':{'y1':238, 'y2':302, 'x':[[1168,1234],[1238,1304],[1308,1374],[1379,1445],[1448,1517]]}, \
-    'xperia':{'y1':436, 'y2':556, 'x':[[1939,2060],[2067,2190],[2197,2318],[2327,2448],[2456,2576]]},\
-    'Widescreen':{'y1':327, 'y2':416, 'x':[[1335,1424],[1431,1522],[1528,1618],[1625,1715],[1722,1811]]},\
-    'iPad':{'y1':541, 'y2':636, 'x':[[1424,1519],[1527,1623],[1631,1726],[1733,1828],[1837,1932]]}
-}
-chara_list = {
-    'aoi':'アオイ','hiyori':'ヒヨリ','io':'イオ','kaori_summer':'水着カオリ','kasumi_magical':'カスミ（マジカル）',\
-    'kokkoro':'コッコロ','kurumi':'クルミ','kuuka':'クウカ','kyaru':'キャル','maho':'マホ',\
-    'nozomi_christmas':'ノゾミ（クリスマス）','pecorine':'ペコリーヌ','pecorine_summer':'水着ペコリーヌ',\
-    'rei_newyear':'正月レイ','rima':'リマ','rino':'リノ','saren_summer':'水着サレン',\
-    'shinobu_halloween':'シノブ（ハロウィン）','tsumugi':'ツムギ','yukari':'ユカリ','yuki':'ユキ',\
-    'tamaki':'タマキ','rin_deremas':'リン（デレマス）','pecorine_princess':'ペコリーヌ（プリンセス）','yui':'ユイ',\
-    'runa':'ルナ','hatsune':'ハツネ','kokkoro_princess':'コッコロ（プリンセス）','mifuyu':'ミフユ','yuni':'ユニ',\
-    'kuuka_ooedo':'クウカ（オーエド）','ruka':'ルカ','rin':'リン','ayumi':'アユミ'
-}
-
-# 画像比率分析用
-Xr = round(1792/828, 2)
-iPhone11 = round(2436/1125, 2)
-Widescreen = round(1920/1080, 2)
-iPad = round(2048/1536, 2)
-img_shape_list = {'iPhoneXr': Xr, 'iPhoneXr': iPhone11, 'xperia': 2, 'Widescreen': Widescreen, 'iPad': iPad}
-width_list = {'iPhoneXr': 1792, 'xperia': 2880, 'Widescreen': 1920, 'iPad': 2048}
-im = None
-
-# ----------------データ格納場--------------------
-
-# 値から辞書型リストのキーを取得
-def get_keys_from_value(d, val):
-    return [k for k, v in d.items() if v == val]
-
-# 各キャラ画像切り抜き
-def cropping(x1,y1,x2,y2,name):
-    global im
-    img_size = (66, 64)
-    im_crop = im.crop((x1, y1, x2, y2))
-    img_path = 'data/crop/arena_pillow_crop_' + name + '.jpg'
-    im_crop.save(img_path, quality=95)
-    
-    img = cv2.imread(img_path)
-    img = cv2.resize(img,img_size)
-    cv2.imwrite(img_path,img)
-
 class Imagehashmanager(object):
     """
     imageハッシュ同士の比較や辞書のキーに使える
@@ -355,131 +309,160 @@ def dhash(image: np.ndarray, hashsize: int = 8):
     diff = np.asarray(diff, dtype=bool)
     return Imagehashmanager(diff)
 
-hash_list = []
-pattern = '%s/*.jpg'
-comparing_dir_path = './data/save/'
-comparing_files = glob.glob(pattern % (comparing_dir_path))
-for comparing_file in comparing_files:
-    img = cv2.imread(comparing_file)
-    hash = dhash(img)
-    hash_list.append(hash)
-
-# 画像認識
-def image_check(file_path):
-    global arena_chara_list
-    printname = ''
-    # get parameters
-    target_file_path = './data/crop/arena_pillow_crop_' + file_path + '.jpg'
-
-    # setting
-    img_size = (66, 64)
-    channels = (0, 1, 2)
-    mask = None
-    hist_size = 256
-    ranges = (0, 256)
-    ret = {}
-
-    # read target image
-    target_img = cv2.imread(target_file_path)
-    target_img = cv2.resize(target_img, img_size)
+class Arena_recognation():
+    def __init__(self):
+        self.arena_chara_list = []
+        self.im = None
     
-    hash = dhash(target_img)
-    min_hash_list = [hash_list[i] - hash for i in range(len(hash_list))]
-    for i in range(len(hash_list)):
-        if min_hash_list[i] == min(min_hash_list):
-            printname = comparing_files[i].replace('./data/save\\', '').replace('.jpg', '')
-    
-    arena_chara_list.append(printname)
+    # 値から辞書型リストのキーを取得
+    def get_keys_from_value(self,d, val):
+        return [k for k, v in d.items() if v == val]
 
-# 複数の要素番号を取得
-def my_index_multi(l, x):
-    return [i for i, _x in enumerate(l) if _x == x]
+    # 各キャラ画像切り抜き
+    def cropping(self,x1,y1,x2,y2,name):
+        img_size = (66, 64)
+        im_crop = self.im.crop((x1, y1, x2, y2))
+        img_path = 'data/crop/arena_pillow_crop_' + name + '.jpg'
+        im_crop.save(img_path, quality=95)
 
-# botのコマンド部分
-@bot.command()
-async def arena(ctx):
-    global width_list
-    global size_list
-    global img_shape_list
-    global arena_chara_list
-    global im
-    
-    img_path = "data/image/arena_test.jpg"
-    channel = ctx.message.channel
-    await ctx.send("画像を送ってなの～")
-    # 画像が送られてくるまで待つ
-    def check(msg):
-        return msg.author == ctx.message.author and msg.attachments
+        img = cv2.imread(img_path)
+        img = cv2.resize(img,img_size)
+        cv2.imwrite(img_path,img)
 
-    receive_msg = await ctx.bot.wait_for('message',check=check)
-    await receive_msg.attachments[0].save(img_path)
-    
-    img = cv2.imread(img_path)
-    img_height,img_width,_ = img.shape
+    # 画像認識
+    def image_check(self,file_path):
 
-    # 読み込んだ画像の比率
-    img_shape = round(img_width/img_height, 2)
-    
-    # 比率から機種を判別
-    keys_list = get_keys_from_value(img_shape_list, img_shape)
+        hash_list = []
+        pattern = '%s/*.jpg'
+        comparing_dir_path = './data/save/'
+        comparing_files = glob.glob(pattern % (comparing_dir_path))
+        for comparing_file in comparing_files:
+            img = cv2.imread(comparing_file)
+            hash = dhash(img)
+            hash_list.append(hash)
+        printname = ''
+        # get parameters
+        target_file_path = './data/crop/arena_pillow_crop_' + file_path + '.jpg'
 
-    try:
-        keys = keys_list[0]
-    except IndexError:
-        await ctx.send("画像が対応してない比率なの…")
-        return
+        # setting
+        img_size = (66, 64)
 
-    # 多解像度対応用に変換
-    try:
-        resize_width = width_list[keys]
-    except UnboundLocalError:
-        await ctx.send("画像が対応してない比率なの…")
-        return
-    resize_height = resize_width / img_width * img_height
-    img = cv2.resize(img,(int(resize_width),int(resize_height)))
-    cv2.imwrite(img_path,img)
+        # read target image
+        target_img = cv2.imread(target_file_path)
+        target_img = cv2.resize(target_img, img_size)
 
-    im = Image.open('data/image/arena_test.jpg')
-    y1 = size_list[keys]['y1']
-    y2 = size_list[keys]['y2']
-    x = size_list[keys]['x']
-    cropping(x[0][0],y1,x[0][1],y2,"p1")
-    cropping(x[1][0],y1,x[1][1],y2,"p2")
-    cropping(x[2][0],y1,x[2][1],y2,"p3")
-    cropping(x[3][0],y1,x[3][1],y2,"p4")
-    cropping(x[4][0],y1,x[4][1],y2,"p5")
+        hash = dhash(target_img)
+        min_hash_list = [hash_list[i] - hash for i in range(len(hash_list))]
+        for i in range(len(hash_list)):
+            if min_hash_list[i] == min(min_hash_list):
+                printname = comparing_files[i].replace('./data/save\\', '').replace('.jpg', '')
 
-    image_check("p1")
-    image_check("p2")
-    image_check("p3")
-    image_check("p4")
-    image_check("p5")
-    
-    # 出力、判定用にまとめ
-    chara_l = []
-    for n in arena_chara_list:
-        chara_l.append(chara_list[n])
-    chara_output = '、'.join(chara_l)
-    
-    # シートから編成を取得
-    attackers = worksheet2.col_values(1)
-    defenders = worksheet2.col_values(2)
-    attack_index = my_index_multi(defenders, chara_output)
+        self.arena_chara_list += printname
 
-    # 取得した編成を一つにまとめる
-    chara_counter = []
-    y = 0
-    for l in range(len(attack_index)):
-        chara_counter.append(attackers[attack_index[y]])
-        y += 1
-    chara_counter_output = '\n'.join(chara_counter)
+    # 複数の要素番号を取得
+    def my_index_multi(self,l, x):
+        return [i for i, _x in enumerate(l) if _x == x]
 
-    if len(attack_index) == 0:
-        await ctx.send(f"```{chara_output}``` に勝てる編成が見つからなかったの…")
-    else:
-        await ctx.send(f'```{chara_output}``` に勝てそうな編成が{len(attack_index)} つ見つかったの！```{chara_counter_output}``` で勝てると思うの！')
+    # botのコマンド部分
+    @bot.command()
+    async def arena(self,ctx):
+        # -------------------各種データ-------------------
+        size_list = {
+                'iPhoneXr':{'y1':238, 'y2':302, 'x':[[1168,1234],[1238,1304],[1308,1374],[1379,1445],[1448,1517]]}, \
+                'xperia':{'y1':436, 'y2':556, 'x':[[1939,2060],[2067,2190],[2197,2318],[2327,2448],[2456,2576]]},\
+                'Widescreen':{'y1':327, 'y2':416, 'x':[[1335,1424],[1431,1522],[1528,1618],[1625,1715],[1722,1811]]},\
+                'iPad':{'y1':541, 'y2':636, 'x':[[1424,1519],[1527,1623],[1631,1726],[1733,1828],[1837,1932]]}
+            }
+        
+        # 画像比率分析用
+        Xr = round(1792/828, 2)
+        iPhone11 = round(2436/1125, 2)
+        Widescreen = round(1920/1080, 2)
+        iPad = round(2048/1536, 2)
+        img_shape_list = {'iPhoneXr': Xr, 'iPhoneXr': iPhone11, 'xperia': 2, 'Widescreen': Widescreen, 'iPad': iPad}
+        width_list = {'iPhoneXr': 1792, 'xperia': 2880, 'Widescreen': 1920, 'iPad': 2048}
+        # -------------------各種データ-------------------
+        
+        img_path = "data/image/arena_test.jpg"
+        channel = ctx.message.channel
+        await ctx.send("画像を送ってなの～")
+        # 画像が送られてくるまで待つ
+        def check(msg):
+            return msg.author == ctx.message.author and msg.attachments
 
-    arena_chara_list.clear()
-    chara_output = None
+        receive_msg = await ctx.bot.wait_for('message',check=check)
+        await receive_msg.attachments[0].save(img_path)
+
+        img = cv2.imread(img_path)
+        img_height,img_width,_ = img.shape
+
+        # 読み込んだ画像の比率
+        img_shape = round(img_width/img_height, 2)
+
+        # 比率から機種を判別
+        keys_list = get_keys_from_value(img_shape_list, img_shape)
+
+        try:
+            keys = keys_list[0]
+        except IndexError:
+            await ctx.send("画像が対応してない比率なの…")
+            return
+
+        # 多解像度対応用に変換
+        try:
+            resize_width = width_list[keys]
+        except UnboundLocalError:
+            await ctx.send("画像が対応してない比率なの…")
+            return
+        resize_height = resize_width / img_width * img_height
+        img = cv2.resize(img,(int(resize_width),int(resize_height)))
+        cv2.imwrite(img_path,img)
+
+        self.im = Image.open('data/image/arena_test.jpg')
+        y1 = size_list[keys]['y1']
+        y2 = size_list[keys]['y2']
+        x = size_list[keys]['x']
+        cropping(x[0][0],y1,x[0][1],y2,"p1")
+        cropping(x[1][0],y1,x[1][1],y2,"p2")
+        cropping(x[2][0],y1,x[2][1],y2,"p3")
+        cropping(x[3][0],y1,x[3][1],y2,"p4")
+        cropping(x[4][0],y1,x[4][1],y2,"p5")
+
+        image_check("p1")
+        image_check("p2")
+        image_check("p3")
+        image_check("p4")
+        image_check("p5")
+
+        chara_list = {
+                'aoi':'アオイ','hiyori':'ヒヨリ','io':'イオ','kaori_summer':'水着カオリ','kasumi_magical':'カスミ（マジカル）',\
+                'kokkoro':'コッコロ','kurumi':'クルミ','kuuka':'クウカ','kyaru':'キャル','maho':'マホ',\
+                'nozomi_christmas':'ノゾミ（クリスマス）','pecorine':'ペコリーヌ','pecorine_summer':'水着ペコリーヌ',\
+                'rei_newyear':'正月レイ','rima':'リマ','rino':'リノ','saren_summer':'水着サレン',\
+                'shinobu_halloween':'シノブ（ハロウィン）','tsumugi':'ツムギ','yukari':'ユカリ','yuki':'ユキ',\
+                'tamaki':'タマキ','rin_deremas':'リン（デレマス）','pecorine_princess':'ペコリーヌ（プリンセス）','yui':'ユイ',\
+                'runa':'ルナ','hatsune':'ハツネ','kokkoro_princess':'コッコロ（プリンセス）','mifuyu':'ミフユ','yuni':'ユニ',\
+                'kuuka_ooedo':'クウカ（オーエド）','ruka':'ルカ','rin':'リン','ayumi':'アユミ'
+            }
+        # 出力、判定用にまとめ
+        chara_l = [chara_list[n] for n in self.arena_chara_list]
+        chara_output = '、'.join(chara_l)
+
+        # シートから編成を取得
+        attackers = worksheet2.col_values(1)
+        defenders = worksheet2.col_values(2)
+        attack_index = my_index_multi(defenders, chara_output)
+
+        # 取得した編成を一つにまとめる
+        chara_counter = [attackers[attack_index[l] for l in range(len(attack_index))]
+        chara_counter_output = '\n'.join(chara_counter)
+
+        if len(attack_index) == 0:
+            await ctx.send(f"```{chara_output}``` に勝てる編成が見つからなかったの…")
+        else:
+            await ctx.send(f'```{chara_output}``` に勝てそうな編成が{len(attack_index)} つ見つかったの！```{chara_counter_output}``` で勝てると思うの！')
+
+        self.arena_chara_list.clear()
+        chara_output = None
 
 bot.run(BOT_TOKEN)

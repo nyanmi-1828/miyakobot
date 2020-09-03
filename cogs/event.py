@@ -52,7 +52,7 @@ class Event(commands.Cog):
         embed.add_field(name="エラー発生ユーザーID", value=ctx.author.id, inline=False)
         embed.add_field(name="エラー発生コマンド", value=ctx.message.content, inline=False)
         embed.add_field(name="発生エラー", value=error, inline=False)
-        await bot.get_channel(ch).send(embed=embed)
+        await self.bot.get_channel(ch).send(embed=embed)
         await ctx.send(f"エラーが出たの エラー名:```{error}```")
 
 def setup(bot):
