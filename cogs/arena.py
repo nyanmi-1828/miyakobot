@@ -162,7 +162,7 @@ class Arena_recognation(commands.Cog):
         return [i for i, _x in enumerate(l) if _x == x]
 
     # botのコマンド部分
-    @commands.command(pass_context=True)
+    @commands.command()
     async def arena(self,ctx):
         # -------------------各種データ-------------------
         size_list = {
@@ -199,7 +199,7 @@ class Arena_recognation(commands.Cog):
         img_shape = round(img_width/img_height, 2)
 
         # 比率から機種を判別
-        keys_list = get_keys_from_value(img_shape_list, img_shape)
+        keys_list = self.get_keys_from_value(img_shape_list, img_shape)
 
         try:
             keys = keys_list[0]
@@ -222,14 +222,14 @@ class Arena_recognation(commands.Cog):
         y2 = size_list[keys]['y2']
         x = size_list[keys]['x']
         
-        cropping(x[0][0],y1,x[0][1],y2,"p1")
-        cropping(x[1][0],y1,x[1][1],y2,"p2")
-        cropping(x[2][0],y1,x[2][1],y2,"p3")
-        cropping(x[3][0],y1,x[3][1],y2,"p4")
-        cropping(x[4][0],y1,x[4][1],y2,"p5")
+        self.cropping(x[0][0],y1,x[0][1],y2,"p1")
+        self.cropping(x[1][0],y1,x[1][1],y2,"p2")
+        self.cropping(x[2][0],y1,x[2][1],y2,"p3")
+        self.cropping(x[3][0],y1,x[3][1],y2,"p4")
+        self.cropping(x[4][0],y1,x[4][1],y2,"p5")
 
         for i in ["p1","p2","p3","p4","p5"]:
-            image_check(i)
+            self.image_check(i)
 
         chara_list = {
                 'aoi':'アオイ','hiyori':'ヒヨリ','io':'イオ','kaori_summer':'水着カオリ','kasumi_magical':'カスミ（マジカル）',\
@@ -248,7 +248,7 @@ class Arena_recognation(commands.Cog):
         # シートから編成を取得
         attackers = worksheet.col_values(1)
         defenders = worksheet.col_values(2)
-        attack_index = my_index_multi(defenders, chara_output)
+        attack_index = self.my_index_multi(defenders, chara_output)
 
         # 取得した編成を一つにまとめる
         chara_counter = [attackers[attack_index[l]] for l in range(len(attack_index))]
