@@ -153,7 +153,7 @@ class Arena_recognation(commands.Cog):
         min_hash_list = [hash_list[i] - hash for i in range(len(hash_list))]
         for i in range(len(hash_list)):
             if min_hash_list[i] == min(min_hash_list):
-                printname = comparing_files[i].replace('./data/save\\', '').replace('.jpg', '')
+                printname = comparing_files[i].replace('./data/save/', '').replace('.jpg', '')
                 
         self.arena_chara_list.append(printname)
 
