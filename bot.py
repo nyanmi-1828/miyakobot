@@ -454,7 +454,7 @@ class Arena_recognation():
         attack_index = my_index_multi(defenders, chara_output)
 
         # 取得した編成を一つにまとめる
-        chara_counter = [attackers[attack_index[l] for l in range(len(attack_index))]
+        chara_counter = [attackers[attack_index[l]] for l in range(len(attack_index))]
         chara_counter_output = '\n'.join(chara_counter)
 
         if len(attack_index) == 0:
