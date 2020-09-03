@@ -31,14 +31,14 @@ class Event(commands.Cog):
     @commands.Cog.listener()
     async def on_reaction_add(self,reaction,user):
         miya_talk = random.choice(talk_list)
-        if user.bot == False and reaction.emoji == "🍮" and purin_value < 10:
+        if user.bot == False and reaction.emoji == "🍮" and self.purin_value < 10:
             print(reaction.emoji)
-            print(purin_value)
-            purin_value += 1
+            print(self.purin_value)
+            self.purin_value += 1
             await reaction.message.channel.send(miya_talk)
-        elif purin_value == 10 and reaction.emoji == "🍮":
+        elif self.purin_value == 10 and reaction.emoji == "🍮":
             await reaction.message.channel.send("こんなにプリンを食べたらミヤコ死んじゃうの…あ、もう死んでたの")
-            purin_value = 0
+            self.purin_value = 0
         else:
             pass
 
