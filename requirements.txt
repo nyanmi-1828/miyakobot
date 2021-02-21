@@ -1,8 +1,8 @@
-discord.py
+discord.py==1.5.1
 aiohttp
 discord.py[voice]
 pynacl
-youtube_dl
+youtube_dl==2021.2.10
 pytz
 dropbox
 matplotlib
