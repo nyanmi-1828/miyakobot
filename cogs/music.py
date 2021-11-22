@@ -59,7 +59,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             url = "https://www.nicovideo.jp/watch/sm" + sm_id
             data = dict()
             async with NicoNicoVideoAsync(url) as nico:
-                data_dict = nico.get_info()
+                data_dict = await nico.get_info()
                 data = {"title": data_dict["video"]["title"], "webpage_url": url}
                 await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
             return cls(None, data=data, requester=ctx.author, site_type="niconico")
@@ -132,7 +132,8 @@ class MusicPlayer:
             if source.site_type == "niconico":
                 url = source.web_url
                 async with niconico_dl.NicoNicoVideoAsync(url) as nico:
-                    niconico_source = discord.FFmpegPCMAudio(nico.get_download_link())
+                    link = await nico.get_download_link()
+                    niconico_source = discord.FFmpegPCMAudio(link)
                     source = NicoNicoSource(niconico_source, title=source.title, requester=source.requester)
                     source.volume = self.volume
                     self.current = source
