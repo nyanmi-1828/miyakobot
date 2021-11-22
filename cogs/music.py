@@ -160,6 +160,7 @@ class MusicPlayer:
                 self.current = None
 
     def destroy(self, guild):
+        await self._channel.send("曲流さないなら抜けるの")
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
 
