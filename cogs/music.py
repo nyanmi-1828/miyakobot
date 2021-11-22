@@ -8,7 +8,8 @@ import traceback
 from async_timeout import timeout
 from functools import partial
 from youtube_dl import YoutubeDL
-from niconico_dl import NicoNicoVideoAsync
+from niconico_dl import NicoNicoVideoAsync, NicoNicoVideo
+import re
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -33,9 +34,10 @@ ytdl = YoutubeDL(ytdl_format_options)
 
 class YTDLSource(discord.PCMVolumeTransformer):
 
-    def __init__(self, source, *, data, requester):
+    def __init__(self, source, *, data, requester, site_type):
         super().__init__(source)
         self.requester = requester
+        self.site_type = site_type
 
         self.title = data.get('title')
         self.web_url = data.get('webpage_url')
@@ -46,6 +48,16 @@ class YTDLSource(discord.PCMVolumeTransformer):
     @classmethod
     async def create_source(cls, ctx, search: str, *, loop, download=False):
         loop = loop or asyncio.get_event_loop()
+        
+        if m := re.search('www.nicovideo.jp/watch/sm([0-9]+)', search) or m := re.search('sp.nicovideo.jp/watch/sm([0-9]+)', search) or m := re.search('nico.ms/sm([0-9]+)', search):
+            sm_id = m.groups()[0]
+            url = "https://www.nicovideo.jp/watch/sm" + sm_id
+            data = dict()
+            async with NicoNicoVideo(url) as nico:
+                data_dict = nico.get_info()
+                data = {"title": data_dict["video"]["title"], "webpage_url": url}
+                await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
+            return cls(None, data=data, requester=ctx.author, site_type="niconico")
 
         to_run = partial(ytdl.extract_info, url=search, download=download)
         data = await loop.run_in_executor(None, to_run)
@@ -62,7 +74,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         
         print(data)
 
-        return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author)
+        return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author, site_type="youtube")
 
     @classmethod
     async def regather_stream(cls, data, *, loop):
@@ -72,9 +84,14 @@ class YTDLSource(discord.PCMVolumeTransformer):
         to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
         data = await loop.run_in_executor(None, to_run)
 
-        return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
+        return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester, site_type="youtube")
 
-
+class NicoNicoSource(discord.PCMVolumeTransformer):
+    def __init__(self, source, *, title, requester):
+        super().__init__(source)
+        self.title = title
+        self.requester = requester
+        
 class MusicPlayer:
     __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume', 'loop')
 
@@ -101,22 +118,35 @@ class MusicPlayer:
             source = await self.queue.get()
             # if self.loop.is_set():
             #     await self.queue.put(source)
-            if not isinstance(source, YTDLSource):
-                try:
-                    source = await YTDLSource.regather_stream(source, loop=self.bot.loop)
-                except Exception as e:
-                    await self._channel.send(f'送った曲の処理が出来ないの！\n'
-                                             f'```css\n[{e}]\n```')
-                    continue
-            source.volume = self.volume
-            self.current = source
+            if source.site_type == "niconico":
+                url = source.web_url
+                async with niconico_dl.NicoNicoVideoAsync(url) as nico:
+                    niconico_source = discord.FFmpegPCMAudio(nico.get_download_link())
+                    source = NicoNicoSource(niconico_source, title=source.title, requester=source.requester)
+                    source.volume = self.volume
+                    self.current = source
+                    self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                    self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
+                                                        f' `{source.requester}` のリクエストなの')
+                    await self.next.wait()
+                    self.current = None
+            elif source.site_type == "youtube":
+                if not isinstance(source, YTDLSource):
+                    try:
+                        source = await YTDLSource.regather_stream(source, loop=self.bot.loop)
+                    except Exception as e:
+                        await self._channel.send(f'送った曲の処理が出来ないの！\n'
+                                                 f'```css\n[{e}]\n```')
+                        continue
+                source.volume = self.volume
+                self.current = source
 
-            self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-            self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
-                                               f' `{source.requester}` のリクエストなの')
-            await self.next.wait()
+                self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
+                                                   f' `{source.requester}` のリクエストなの')
+                await self.next.wait()
 
-            self.current = None
+                self.current = None
 
     def destroy(self, guild):
         return self.bot.loop.create_task(self._cog.cleanup(guild))

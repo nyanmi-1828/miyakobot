@@ -92,12 +92,12 @@ class Miyako(commands.Cog):
             voice_client.play(ffmpeg_audio_source)
             return
         
-    @bot.command()
+    @commands.command()
     async def pudding(ctx):
         purin = random.choice(recipe_list)
         await ctx.send(purin)
 
-    @bot.command()
+    @commands.command()
     async def omikuji(ctx):
         omikuji = random.choice(omikuji_list)
         await ctx.send(omikuji)
