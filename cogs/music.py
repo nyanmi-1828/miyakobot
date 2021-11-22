@@ -58,7 +58,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             sm_id = m.groups()[0]
             url = "https://www.nicovideo.jp/watch/sm" + sm_id
             data = dict()
-            async with NicoNicoVideo(url) as nico:
+            async with NicoNicoVideoAsync(url) as nico:
                 data_dict = nico.get_info()
                 data = {"title": data_dict["video"]["title"], "webpage_url": url}
                 await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
