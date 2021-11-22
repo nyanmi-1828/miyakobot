@@ -7,7 +7,7 @@ import traceback
 from async_timeout import timeout
 from functools import partial
 from youtube_dl import YoutubeDL
-from niconico_dl import NicoNicoVideoAsync, NicoNicoVideo
+from niconico_dl import NicoNicoVideoAsync
 import re
 import os
 
@@ -98,7 +98,7 @@ class NicoNicoSource(discord.PCMVolumeTransformer):
         self.title = title
         self.requester = requester
         
-class Mp3Source(discord.PCMVolumeTransformer)
+class Mp3Source(discord.PCMVolumeTransformer):
     def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester, path):
         super().__init__(source)
         self.title = title
@@ -310,7 +310,7 @@ class Music(commands.Cog):
                     file_check(filename, i)
                 else:
                     return f'{filename}{i}.mp3'
-            path = file_check(filename, i)
+            path = file_check(attachment.filename, i)
             await attachment.save(path)
             return path
                 
