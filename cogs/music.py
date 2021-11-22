@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-
 import asyncio
 import itertools
 import sys
@@ -11,6 +10,12 @@ from youtube_dl import YoutubeDL
 from niconico_dl import NicoNicoVideoAsync, NicoNicoVideo
 import re
 
+class VoiceConnectionError(commands.CommandError):
+    """Custom Exception class for connection errors."""
+
+class InvalidVoiceChannel(VoiceConnectionError):
+    """Exception for cases of invalid Voice Channels."""
+    
 ytdl_format_options = {
     'format': 'bestaudio/best',
     'outtmpl': 'venv/bot/videos/%(extractor)s-%(id)s-%(title)s.%(ext)s',
@@ -49,7 +54,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     async def create_source(cls, ctx, search: str, *, loop, download=False):
         loop = loop or asyncio.get_event_loop()
         
-        if m := re.search('www.nicovideo.jp/watch/sm([0-9]+)', search) or m := re.search('sp.nicovideo.jp/watch/sm([0-9]+)', search) or m := re.search('nico.ms/sm([0-9]+)', search):
+        if (m := re.search('www.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('sp.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('nico.ms/sm([0-9]+)', search)):
             sm_id = m.groups()[0]
             url = "https://www.nicovideo.jp/watch/sm" + sm_id
             data = dict()
@@ -115,7 +120,13 @@ class MusicPlayer:
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
             self.next.clear()
-            source = await self.queue.get()
+            try:
+                async with timeout(300): 
+                    source = await self.queue.get()
+            except asyncio.TimeoutError:
+                if self in self._cog.players.values():
+                    return self.destroy(self._guild)
+                return
             # if self.loop.is_set():
             #     await self.queue.put(source)
             if source.site_type == "niconico":
