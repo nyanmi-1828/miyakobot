@@ -133,7 +133,7 @@ class MusicPlayer:
                 url = source.web_url
                 async with NicoNicoVideoAsync(url) as nico:
                     link = await nico.get_download_link()
-                    niconico_source = discord.FFmpegPCMAudio(link)
+                    niconico_source = discord.FFmpegPCMAudio(link, before_options="-nostdin")
                     source = NicoNicoSource(niconico_source, title=source.title, requester=source.requester)
                     source.volume = self.volume
                     self.current = source
