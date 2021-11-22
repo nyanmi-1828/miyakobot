@@ -83,6 +83,15 @@ class Help(commands.Cog):
         embed.add_field(name='**m!volume**',value='音量を変えるの 0~100の値で指定してなの',inline=False)
         embed.add_field(name='**m!stop**',value='切断するの',inline=False)
         await ctx.send(embed=embed)
+        
+    @commands.command()
+    async def faq(ctx):
+        embed = discord.Embed(title="よくある質問や出来事なの", description="詳しいことはここに書いてあるの: https://github.com/nyanmi-1828/miyakobot", color=0x00ffff)
+        embed.add_field(name="エラーが出るの？", value=\
+            "良かったら起こった状況とエラー名を管理者(Discord: nyanmi-1828#7675 Twitter: @nyanmi_23)のDMに送ってほしいの", inline=False)
+        embed.add_field(name="m!arenaで出るキャラが間違ってるの？", value="開発段階だから許してなの 間違った時の画像を送ってなの", inline=False)
+        embed.add_field(name="m!arenaの使い方が分からないの？", value="https://github.com/nyanmi-1828/miyakobot を見てほしいの…", inline=False)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.remove_command('help')
