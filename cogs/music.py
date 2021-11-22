@@ -8,6 +8,7 @@ import traceback
 from async_timeout import timeout
 from functools import partial
 from youtube_dl import YoutubeDL
+from niconico_dl import NicoNicoVideoAsync
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -29,7 +30,6 @@ ffmpegopts = {
 }
 
 ytdl = YoutubeDL(ytdl_format_options)
-
 
 class YTDLSource(discord.PCMVolumeTransformer):
 
@@ -59,6 +59,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
             source = ytdl.prepare_filename(data)
         else:
             return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
+        
+        print(data)
 
         return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author)
 

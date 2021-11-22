@@ -21,9 +21,9 @@ cogs = [
 class MyBot(commands.Bot):
 
     # MyBotのコンストラクタ。
-    def __init__(self, command_prefix,help_command,intents):
+    def __init__(self, command_prefix,help_command):
         # スーパークラスのコンストラクタに値を渡して実行。
-        super().__init__(command_prefix,help_command,intents=intents)
+        super().__init__(command_prefix,help_command)
 
         # cogsに格納されている名前から、コグを読み込む。
         # エラーが発生した場合は、エラー内容を表示。
