@@ -131,7 +131,7 @@ class MusicPlayer:
             #     await self.queue.put(source)
             if source.site_type == "niconico":
                 url = source.web_url
-                async with niconico_dl.NicoNicoVideoAsync(url) as nico:
+                async with NicoNicoVideoAsync(url) as nico:
                     link = await nico.get_download_link()
                     niconico_source = discord.FFmpegPCMAudio(link)
                     source = NicoNicoSource(niconico_source, title=source.title, requester=source.requester)
