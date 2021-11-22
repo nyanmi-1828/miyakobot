@@ -11,9 +11,14 @@ class Event(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.purin_value = 0
+        
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if '🍮' in message.content:
+            await message.channel.send('でっかいプリンなの！いただきますなの～♪')
 
     @commands.Cog.listener()
-    async def on_message_edit(self,before, after):
+    async def on_message_edit(self, before, after):
         if before.author.bot:
             return
         if '🍮' in before.content and not '🍮' in after.content:

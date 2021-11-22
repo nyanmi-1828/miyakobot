@@ -9,6 +9,7 @@ from functools import partial
 from youtube_dl import YoutubeDL
 from niconico_dl import NicoNicoVideoAsync, NicoNicoVideo
 import re
+import os
 
 class VoiceConnectionError(commands.CommandError):
     """Custom Exception class for connection errors."""
@@ -92,10 +93,18 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester, site_type="youtube")
 
 class NicoNicoSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, title, requester):
+    def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester):
         super().__init__(source)
         self.title = title
         self.requester = requester
+        
+class Mp3Source(discord.PCMVolumeTransformer)
+    def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester, path):
+        super().__init__(source)
+        self.title = title
+        self.path = path
+        self.requester = requester
+        self.site_type = "local"
         
 class MusicPlayer:
     __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume', 'loop')
@@ -129,7 +138,16 @@ class MusicPlayer:
                 return
             # if self.loop.is_set():
             #     await self.queue.put(source)
-            if source.site_type == "niconico":
+            if source.site_type == "local":
+                source.volume = self.volume
+                self.current = source
+                self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
+                                                        f' `{source.requester}` のリクエストなの')
+                await self.next.wait()
+                source.cleanup()
+                self.current = None
+            elif source.site_type == "niconico":
                 url = source.web_url
                 async with NicoNicoVideoAsync(url) as nico:
                     link = await nico.get_download_link()
@@ -141,6 +159,7 @@ class MusicPlayer:
                     self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
                                                         f' `{source.requester}` のリクエストなの')
                     await self.next.wait()
+                    source.cleanup()
                     self.current = None
             elif source.site_type == "youtube":
                 if not isinstance(source, YTDLSource):
@@ -157,7 +176,7 @@ class MusicPlayer:
                 self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
                                                    f' `{source.requester}` のリクエストなの')
                 await self.next.wait()
-
+                source.cleanup()
                 self.current = None
 
     async def destroy(self, guild):
@@ -246,7 +265,9 @@ class Music(commands.Cog):
                     return
 
     @commands.command(name='play', aliases=['sing','p'])
-    async def play_(self, ctx, *, search: str):
+    async def play_(self, ctx, *, search: str = None):
+        if search is None:
+            return await ctx.send("`m!play [url]`の形式で入力すれば再生してやるの　検索機能はないの")
         await ctx.trigger_typing()
 
         vc = ctx.voice_client
@@ -263,15 +284,52 @@ class Music(commands.Cog):
             source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
 
         await player.queue.put(source)
+        
+    @commands.command(aliases=['mp3','pmp3','singmp3'])
+    async def playmp3(self, ctx, *, search: str):
+        if not ctx.message.attachments:
+            await ctx.send("mp3ファイルを送れなの")
+            try:
+                message = await self.bot.wait_for("message", check=lambda m: m.author.id == ctx.author.id and m.attachments, timeout=300)
+            except asyncio.TimeoutError:
+                return
+            else:
+                attachments = message.attachments
+        else:
+            attachments = ctx.message.attachments
+            
+        vc = ctx.voice_client
+        if not vc:
+            await ctx.invoke(self.connect_)
+            
+        async def mp3_file_save(attachment: discord.Attachment):
+            i = 0
+            def file_check(filename, i):
+                if os.path.exists(f'{filename}{i}.mp3'):
+                    i += 1
+                    file_check(filename, i)
+                else:
+                    return f'{filename}{i}.mp3'
+            path = file_check(filename, i)
+            await attachment.save(path)
+            return path
+                
+        for attachment in attachments:
+            await ctx.trigger_typing()
+            player = self.get_player(ctx)
+            path = await mp3_file_save(attachment)
+            source = Mp3Source(discord.FFmpegPCMAudio(path), title=attachment.filename, requester=ctx.author, path=path)
+            await ctx.send(f'```ini\n[{source["title"]} をQueueに追加したの]\n```')
+            await player.queue.put(source)
 
     @commands.command()
     async def loop(self, ctx):
         if not self.get_player(ctx).loop.is_set():
             self.get_player(ctx).loop.set()
-            await ctx.send("Queueをループするようにしたの")
+            await ctx.send("キューをループするようにしたの")
         else:
             self.get_player(ctx).loop.clear()
-            await ctx.send("Queueをループしないようにしたの")
+            await ctx.send("キューをループしないようにしたの")
 
     @commands.command(name='pause')
     async def pause_(self, ctx):
