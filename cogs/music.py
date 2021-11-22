@@ -125,7 +125,7 @@ class MusicPlayer:
                     source = await self.queue.get()
             except asyncio.TimeoutError:
                 if self in self._cog.players.values():
-                    return self.destroy(self._guild)
+                    return await self.destroy(self._guild)
                 return
             # if self.loop.is_set():
             #     await self.queue.put(source)
@@ -159,7 +159,7 @@ class MusicPlayer:
 
                 self.current = None
 
-    def destroy(self, guild):
+    async def destroy(self, guild):
         await self._channel.send("曲流さないなら抜けるの")
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
