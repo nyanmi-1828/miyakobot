@@ -52,8 +52,6 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     @classmethod
     async def create_source(cls, ctx, search: str, *, loop, download=False):
-        loop = loop or asyncio.get_event_loop()
-        
         if (m := re.search('www.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('sp.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('nico.ms/sm([0-9]+)', search)):
             sm_id = m.groups()[0]
             url = "https://www.nicovideo.jp/watch/sm" + sm_id
@@ -62,24 +60,26 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 data_dict = await nico.get_info()
                 data = {"title": data_dict["video"]["title"], "webpage_url": url}
                 await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
-            return cls(None, data=data, requester=ctx.author, site_type="niconico")
-
-        to_run = partial(ytdl.extract_info, url=search, download=download)
-        data = await loop.run_in_executor(None, to_run)
-
-        if 'entries' in data:
-            data = data['entries'][0]
-
-        await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
-
-        if download:
-            source = ytdl.prepare_filename(data)
+            return cls(discord.FFmpegPCMAudio(url), data=data, requester=ctx.author, site_type="niconico")
         else:
-            return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
-        
-        print(data)
+            loop = loop or asyncio.get_event_loop()
+            
+            to_run = partial(ytdl.extract_info, url=search, download=download)
+            data = await loop.run_in_executor(None, to_run)
 
-        return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author, site_type="youtube")
+            if 'entries' in data:
+                data = data['entries'][0]
+
+            await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
+
+            if download:
+                source = ytdl.prepare_filename(data)
+            else:
+                return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
+
+            print(data)
+
+            return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author, site_type="youtube")
 
     @classmethod
     async def regather_stream(cls, data, *, loop):
@@ -257,7 +257,7 @@ class Music(commands.Cog):
         player = self.get_player(ctx)
 
         try:
-            async with timeout(5):
+            async with timeout(15):
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=True)
         except:
             source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
