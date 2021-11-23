@@ -278,12 +278,11 @@ class Music(commands.Cog):
         player = self.get_player(ctx)
 
         try:
-            async with timeout(15):
+            async with timeout(20):
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=True)
+                await player.queue.put(source)
         except:
-            source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
-
-        await player.queue.put(source)
+            await ctx.send("タイムアウトしたの")
         
     @commands.command(aliases=['mp3','pmp3','singmp3'])
     async def playmp3(self, ctx, *, search: str):
