@@ -285,7 +285,7 @@ class Music(commands.Cog):
             await ctx.send("タイムアウトしたの")
         
     @commands.command(aliases=['mp3','pmp3','singmp3'])
-    async def playmp3(self, ctx, *, search: str):
+    async def playmp3(self, ctx):
         if not ctx.message.attachments:
             await ctx.send("mp3ファイルを送れなの")
             try:
@@ -318,7 +318,7 @@ class Music(commands.Cog):
             player = self.get_player(ctx)
             path = await mp3_file_save(attachment)
             source = Mp3Source(discord.FFmpegPCMAudio(path), title=attachment.filename, requester=ctx.author, path=path)
-            await ctx.send(f'```ini\n[{source["title"]} をQueueに追加したの]\n```')
+            await ctx.send(f'```ini\n[{source.title} をQueueに追加したの]\n```')
             await player.queue.put(source)
 
     @commands.command()
