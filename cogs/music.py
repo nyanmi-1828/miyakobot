@@ -73,7 +73,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
             await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
 
-            return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=ctx.author, site_type="youtube")
+            return cls(discord.FFmpegPCMAudio(data['formats'][0]['url']), data=data, requester=ctx.author, site_type="youtube")
 
 class NicoNicoSource(discord.PCMVolumeTransformer):
     def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester):
