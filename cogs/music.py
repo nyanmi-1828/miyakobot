@@ -61,7 +61,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 data_dict = await nico.get_info()
                 data = {"title": data_dict["video"]["title"], "webpage_url": url}
                 await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
-            return cls(discord.FFmpegPCMAudio(url), data=data, requester=ctx.author, site_type="niconico")
+            return SiteTypeClass(data["title"],ctx.author,data["webpage_url"],"niconico")
         else:
             loop = loop or asyncio.get_event_loop()
             
@@ -80,7 +80,14 @@ class NicoNicoSource(discord.PCMVolumeTransformer):
         super().__init__(source)
         self.title = title
         self.requester = requester
-        
+
+class SiteTypeClass:
+    def __init__(self, title, requester, web_url, site_type):
+        self.site_type = site_type
+        self.title = title
+        self.requester = requester
+        self.web_url = web_url
+
 class Mp3Source(discord.PCMVolumeTransformer):
     def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester, path):
         super().__init__(source)
