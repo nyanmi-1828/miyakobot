@@ -52,7 +52,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return self.__getattribute__(item)
 
     @classmethod
-    async def create_source(cls, ctx, search: str, *, loop, download=False):
+    async def create_source(cls, ctx, search: str, *, loop):
         if (m := re.search('www.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('sp.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('nico.ms/sm([0-9]+)', search)):
             sm_id = m.groups()[0]
             url = "https://www.nicovideo.jp/watch/sm" + sm_id
@@ -65,7 +65,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         else:
             loop = loop or asyncio.get_event_loop()
             
-            to_run = partial(ytdl.extract_info, url=search, download=download)
+            to_run = partial(ytdl.extract_info, url=search, download=False)
             data = await loop.run_in_executor(None, to_run)
 
             if 'entries' in data:
@@ -73,24 +73,9 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
             await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
 
-            if download:
-                source = ytdl.prepare_filename(data)
-            else:
-                return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
-
             print(data)
 
-            return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author, site_type="youtube")
-
-    @classmethod
-    async def regather_stream(cls, data, *, loop):
-        loop = loop or asyncio.get_event_loop()
-        requester = data['requester']
-
-        to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
-        data = await loop.run_in_executor(None, to_run)
-
-        return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester, site_type="youtube")
+            return cls(discord.FFmpegPCMAudio(data['webpage_url']), data=data, requester=ctx.author, site_type="youtube")
 
 class NicoNicoSource(discord.PCMVolumeTransformer):
     def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester):
@@ -279,7 +264,7 @@ class Music(commands.Cog):
 
         try:
             async with timeout(20):
-                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=True)
+                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
                 await player.queue.put(source)
         except:
             await ctx.send("タイムアウトしたの")
