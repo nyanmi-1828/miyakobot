@@ -290,15 +290,16 @@ class Music(commands.Cog):
         vc = ctx.voice_client
         if not vc:
             await ctx.invoke(self.connect_)
+
+        def file_check(filename, i):
+            if not os.path.exists(f'{filename}{i}.mp3'):
+                i += 1
+                file_check(filename, i)
+            else:
+                return f'{filename}{i}.mp3'
             
         async def mp3_file_save(attachment: discord.Attachment):
             i = 0
-            def file_check(filename, i):
-                if os.path.exists(f'{filename}{i}.mp3'):
-                    i += 1
-                    file_check(filename, i)
-                else:
-                    return f'{filename}{i}.mp3'
             path = file_check(attachment.filename, i)
             await attachment.save(path)
             return path
