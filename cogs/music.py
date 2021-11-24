@@ -71,9 +71,19 @@ class YTDLSource(discord.PCMVolumeTransformer):
             if 'entries' in data:
                 data = data['entries'][0]
 
+            # 一番音質いい奴流す
+            formats = [
+                format_
+                for format_ in data['formats']
+                if format_['acodec'] == 'opus'
+            ]
+            formats = sorted(formats, key=lambda x: x['asr'], reverse=True)
+            formats = sorted(formats, key=lambda x: x['abr'], reverse=True)
+            best_audio_url = formats[0]['url']
+
             await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
 
-            return cls(discord.FFmpegPCMAudio(data['formats'][0]['url']), data=data, requester=ctx.author, site_type="youtube")
+            return cls(discord.FFmpegPCMAudio(best_audio_url), data=data, requester=ctx.author, site_type="youtube")
 
 class NicoNicoSource(discord.PCMVolumeTransformer):
     def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester):
@@ -141,7 +151,7 @@ class MusicPlayer:
                 url = source.web_url
                 async with NicoNicoVideoAsync(url) as nico:
                     link = await nico.get_download_link()
-                    niconico_source = discord.FFmpegPCMAudio(link, before_options="-nostdin")
+                    niconico_source = discord.FFmpegPCMAudio(link, **ffmpegopts)
                     source = NicoNicoSource(niconico_source, title=source.title, requester=source.requester)
                     source.volume = self.volume
                     self.current = source
