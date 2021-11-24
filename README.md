@@ -59,6 +59,10 @@ urlのところをyoutubeまたはsoundcloudのリンクにすると、自分の
 #### m!play url
 前述の通り、url先の音楽をDLして再生（既に再生されている場合はキューに追加）します。<br>
 `m!play https://youtube.com/***`のように入力します。
+SoundCloudとYoutubeとNiconicoに対応しています。
+#### m!playmp3
+m!mp3でも反応します。
+このコマンドを入力して「mp3を送れ」と言われた後にmp3ファイルを送ると再生（既に再生されている場合はキューに追加）します。
 #### m!loop
 今のキューに入っている曲をループします。再度入力することで解除されます。
 #### m!pause
