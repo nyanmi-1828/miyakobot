@@ -162,13 +162,6 @@ class MusicPlayer:
                     source.cleanup()
                     self.current = None
             elif source.site_type == "youtube":
-                if not isinstance(source, YTDLSource):
-                    try:
-                        source = await YTDLSource.regather_stream(source, loop=self.bot.loop)
-                    except Exception as e:
-                        await self._channel.send(f'送った曲の処理が出来ないの！\n'
-                                                 f'```css\n[{e}]\n```')
-                        continue
                 source.volume = self.volume
                 self.current = source
 
@@ -228,6 +221,12 @@ class Music(commands.Cog):
             self.players[ctx.guild.id] = player
 
         return player
+    
+    def del_player(self, ctx):
+        try:
+            del self.players[ctx.guild.id]
+        except KeyError:
+            pass
 
     @commands.command(name='connect', aliases=['join'])
     async def connect_(self, ctx, *, channel: discord.VoiceChannel = None):
@@ -281,8 +280,8 @@ class Music(commands.Cog):
             async with timeout(20):
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
                 await player.queue.put(source)
-        except:
-            await ctx.send("タイムアウトしたの")
+        except Exception as e:
+            await ctx.send(f"多分なんかエラー起きたの```{str(e)}```")
         
     @commands.command(aliases=['mp3','pmp3','singmp3'])
     async def playmp3(self, ctx):
@@ -302,9 +301,8 @@ class Music(commands.Cog):
             await ctx.invoke(self.connect_)
 
         def file_check(filename, i):
-            if not os.path.exists(f'{filename}{i}.mp3'):
-                i += 1
-                file_check(filename, i)
+            if os.path.isfile(f'{filename}{i}.mp3'):
+                return file_check(filename, i + 1)
             else:
                 return f'{filename}{i}.mp3'
             
@@ -381,10 +379,9 @@ class Music(commands.Cog):
         if player.queue.empty():
             return await ctx.send('キューには何もないの！')
 
-        # Grab up to 5 entries from the queue...
-        upcoming = list(itertools.islice(player.queue._queue, 0, 5))
+        upcoming = list(player.queue._queue)
 
-        fmt = '\n'.join(f'**`{_["title"]}`**' for _ in upcoming)
+        fmt = '\n'.join(f'**`{_.title}`**' for _ in upcoming)
         embed = discord.Embed(title=f'Upcoming - Next {len(upcoming)}', description=fmt)
 
         await ctx.send(embed=embed)
@@ -439,36 +436,21 @@ class Music(commands.Cog):
     @commands.command(aliases=["disconnect","bye"])
     async def leave(self, ctx):
         vc = ctx.voice_client
-        vo_client = ctx.message.guild.voice_client
-        player = self.get_player(ctx)
+        vo_client = ctx.guild.voice_client
 
         if not vc or not vc.is_connected():
             await ctx.send("ミヤコはこのサーバーのボイスチャンネルに参加してないの！")
             return
 
-        while not player.queue.empty():
-            vc.stop()
-            break
-
-        if vc.is_playing() and player.queue.empty():
-            vc.stop()
-            ffmpeg_audio_source = discord.FFmpegPCMAudio('./mp3/disconnect.mp3')
-            vo_client.play(ffmpeg_audio_source)
-            try:
-                wait = await ctx.bot.wait_for('reaction_add' , timeout = 3.5)
-            except asyncio.TimeoutError:
-                await vo_client.disconnect()
-                await ctx.send("ボイスチャンネルから切断したの")
-            return  
+        self.del_player(ctx)
             
         ffmpeg_audio_source = discord.FFmpegPCMAudio('./mp3/disconnect.mp3')
-        vo_client.play(ffmpeg_audio_source)
-        
-        try:
-            wait = await ctx.bot.wait_for('reaction_add' , timeout = 3.5)
-        except asyncio.TimeoutError:
-            await vo_client.disconnect()
-            await ctx.send("ボイスチャンネルから切断したの")
+        next_ = asyncio.Event()
+        next_.clear()
+        vo_client.play(ffmpeg_audio_source, after=lambda _: self.bot.loop.call_soon_threadsafe(next_.set))
+        await next_.wait()
+        await vo_client.disconnect()
+        await ctx.send("ボイスチャンネルから切断したの")
 
 
 def setup(bot):
