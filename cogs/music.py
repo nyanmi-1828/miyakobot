@@ -172,8 +172,9 @@ class MusicPlayer:
                 source.cleanup()
                 self.current = None
 
-    async def destroy(self, guild):
-        await self._channel.send("曲流さないなら抜けるの")
+    async def destroy(self, guild: discord.Guild):
+        if guild.voice_client:
+            await self._channel.send("曲流さないなら抜けるの")
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
 
@@ -436,7 +437,6 @@ class Music(commands.Cog):
     @commands.command(aliases=["disconnect","bye"])
     async def leave(self, ctx):
         vc = ctx.voice_client
-        vo_client = ctx.guild.voice_client
 
         if not vc or not vc.is_connected():
             await ctx.send("ミヤコはこのサーバーのボイスチャンネルに参加してないの！")
@@ -447,9 +447,9 @@ class Music(commands.Cog):
         ffmpeg_audio_source = discord.FFmpegPCMAudio('./mp3/disconnect.mp3')
         next_ = asyncio.Event()
         next_.clear()
-        vo_client.play(ffmpeg_audio_source, after=lambda _: self.bot.loop.call_soon_threadsafe(next_.set))
+        vc.play(ffmpeg_audio_source, after=lambda _: self.bot.loop.call_soon_threadsafe(next_.set))
         await next_.wait()
-        await vo_client.disconnect()
+        await vc.disconnect()
         await ctx.send("ボイスチャンネルから切断したの")
 
 
