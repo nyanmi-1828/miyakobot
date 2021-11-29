@@ -259,7 +259,7 @@ class Music(commands.Cog):
                     async with NicoNicoVideoAsync(url) as nico:
                         data = await nico.get_info()
                         await ctx.send(f'```ini\n[{data["video"]["title"]} をQueueに追加したの]\n```')
-                        await player.queue.put(SiteTypeClass(data["video"]["title"], ctx.author, url, "niconico")
+                        await player.queue.put(SiteTypeClass(data["video"]["title"], ctx.author, url, "niconico"))
                 else:
                     loop = self.bot.loop or asyncio.get_event_loop()
 
