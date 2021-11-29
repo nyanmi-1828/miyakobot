@@ -2,7 +2,7 @@ build:
   languages:
     - python
   packages:
-    - libopencv-dev
+#    - libopencv-dev
     - ffmpeg
 run: 
   discordbot: python bot.py
