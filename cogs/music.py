@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import asyncio
-import itertools
 import sys
 import traceback
 from async_timeout import timeout
@@ -127,15 +126,18 @@ class MusicPlayer:
                     if 'entries' in data:
                         data = data['entries'][0]
                     # 一番音質いい奴流す
-                    formats = [
-                        format_
-                        for format_ in data['formats']
-                        if format_['acodec'] == 'opus'
-                    ]
-                    formats = sorted(formats, key=lambda x: x['asr'], reverse=True)
-                    formats = sorted(formats, key=lambda x: x['abr'], reverse=True)
-                    best_audio_url = formats[0]['url']
-                    youtube_source = discord.FFmpegPCMAudio(best_audio_url, **ffmpegopts)
+                    if 'acodec' in data['formats']:
+                        formats = [
+                            format_
+                            for format_ in data['formats']
+                            if format_['acodec'] == 'opus'
+                        ]
+                        formats = sorted(formats, key=lambda x: x['asr'], reverse=True)
+                        formats = sorted(formats, key=lambda x: x['abr'], reverse=True)
+                        url = formats[0]['url']
+                    else:
+                        url = data['formats'][0]['url']
+                    youtube_source = discord.FFmpegPCMAudio(url, **ffmpegopts)
                     source = Source(youtube_source, title=source.title, requester=source.requester)
                     source.volume = self.volume
                     self.current = source
