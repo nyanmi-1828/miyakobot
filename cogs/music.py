@@ -38,54 +38,7 @@ ffmpegopts = {
 
 ytdl = YoutubeDL(ytdl_format_options)
 
-class YTDLSource(discord.PCMVolumeTransformer):
-
-    def __init__(self, source, *, data, requester, site_type):
-        super().__init__(source)
-        self.requester = requester
-        self.site_type = site_type
-
-        self.title = data.get('title')
-        self.web_url = data.get('webpage_url')
-
-    def __getitem__(self, item: str):
-        return self.__getattribute__(item)
-
-    @classmethod
-    async def create_source(cls, ctx, search: str, *, loop):
-        if (m := re.search('www.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('sp.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('nico.ms/sm([0-9]+)', search)):
-            sm_id = m.groups()[0]
-            url = "https://www.nicovideo.jp/watch/sm" + sm_id
-            data = dict()
-            async with NicoNicoVideoAsync(url) as nico:
-                data_dict = await nico.get_info()
-                data = {"title": data_dict["video"]["title"], "webpage_url": url}
-                await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
-            return SiteTypeClass(data["title"],ctx.author,data["webpage_url"],"niconico")
-        else:
-            loop = loop or asyncio.get_event_loop()
-            
-            to_run = partial(ytdl.extract_info, url=search, download=False)
-            data = await loop.run_in_executor(None, to_run)
-
-            if 'entries' in data:
-                data = data['entries'][0]
-
-            # 一番音質いい奴流す
-            formats = [
-                format_
-                for format_ in data['formats']
-                if format_['acodec'] == 'opus'
-            ]
-            formats = sorted(formats, key=lambda x: x['asr'], reverse=True)
-            formats = sorted(formats, key=lambda x: x['abr'], reverse=True)
-            best_audio_url = formats[0]['url']
-
-            await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
-
-            return cls(discord.FFmpegPCMAudio(best_audio_url), data=data, requester=ctx.author, site_type="youtube")
-
-class NicoNicoSource(discord.PCMVolumeTransformer):
+class Source(discord.PCMVolumeTransformer):
     def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester):
         super().__init__(source)
         self.title = title
@@ -97,6 +50,9 @@ class SiteTypeClass:
         self.title = title
         self.requester = requester
         self.web_url = web_url
+        
+    def copy(self):
+        return SiteTypeClass(self.title, self.requester, self.web_url, self.site_type)
 
 class Mp3Source(discord.PCMVolumeTransformer):
     def __init__(self, source: discord.FFmpegPCMAudio, *, title, requester, path):
@@ -105,6 +61,9 @@ class Mp3Source(discord.PCMVolumeTransformer):
         self.path = path
         self.requester = requester
         self.site_type = "local"
+        
+    def copy(self):
+        return Mp3Source(discord.FFmpegPCMAudio(self.path), title=self.title, requester=self.requester, path=self.path)
         
 class MusicPlayer:
     __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume', 'loop')
@@ -136,8 +95,8 @@ class MusicPlayer:
                 if self in self._cog.players.values():
                     return await self.destroy(self._guild)
                 return
-            # if self.loop.is_set():
-            #     await self.queue.put(source)
+            if self.loop.is_set():
+                await self.queue.put(source.copy())
             if source.site_type == "local":
                 source.volume = self.volume
                 self.current = source
@@ -152,7 +111,7 @@ class MusicPlayer:
                 async with NicoNicoVideoAsync(url) as nico:
                     link = await nico.get_download_link()
                     niconico_source = discord.FFmpegPCMAudio(link, **ffmpegopts)
-                    source = NicoNicoSource(niconico_source, title=source.title, requester=source.requester)
+                    source = Source(niconico_source, title=source.title, requester=source.requester)
                     source.volume = self.volume
                     self.current = source
                     self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
@@ -162,15 +121,30 @@ class MusicPlayer:
                     source.cleanup()
                     self.current = None
             elif source.site_type == "youtube":
-                source.volume = self.volume
-                self.current = source
-
-                self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-                self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
+                with YoutubeDL(ytdl_format_options) as ytdl:
+                    youtube_url = source.web_url
+                    data = ytdl.extract_info(youtube_url, download=False)
+                    if 'entries' in data:
+                        data = data['entries'][0]
+                    # 一番音質いい奴流す
+                    formats = [
+                        format_
+                        for format_ in data['formats']
+                        if format_['acodec'] == 'opus'
+                    ]
+                    formats = sorted(formats, key=lambda x: x['asr'], reverse=True)
+                    formats = sorted(formats, key=lambda x: x['abr'], reverse=True)
+                    best_audio_url = formats[0]['url']
+                    youtube_source = discord.FFmpegPCMAudio(best_audio_url, **ffmpegopts)
+                    source = Source(youtube_source, title=source.title, requester=source.requester)
+                    source.volume = self.volume
+                    self.current = source
+                    self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                    self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
                                                    f' `{source.requester}` のリクエストなの')
-                await self.next.wait()
-                source.cleanup()
-                self.current = None
+                    await self.next.wait()
+                    source.cleanup()
+                    self.current = None
 
     async def destroy(self, guild: discord.Guild):
         if guild.voice_client:
@@ -265,7 +239,7 @@ class Music(commands.Cog):
                     return
 
     @commands.command(name='play', aliases=['sing','p'])
-    async def play_(self, ctx, *, search: str = None):
+    async def play_(self, ctx, search: str = None):
         if search is None:
             return await ctx.send("`m!play [url]`の形式で入力すれば再生してやるの　検索機能はないの")
         await ctx.trigger_typing()
@@ -279,8 +253,25 @@ class Music(commands.Cog):
 
         try:
             async with timeout(20):
-                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
-                await player.queue.put(source)
+                if (m := re.search('www.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('sp.nicovideo.jp/watch/sm([0-9]+)', search)) or (m := re.search('nico.ms/sm([0-9]+)', search)):
+                    sm_id = m.groups()[0]
+                    url = "https://www.nicovideo.jp/watch/sm" + sm_id
+                    async with NicoNicoVideoAsync(url) as nico:
+                        data = await nico.get_info()
+                        await ctx.send(f'```ini\n[{data["video"]["title"]} をQueueに追加したの]\n```')
+                        await player.queue.put(SiteTypeClass(data["video"]["title"], ctx.author, url, "niconico"))
+                else:
+                    loop = self.bot.loop or asyncio.get_event_loop()
+
+                    to_run = partial(ytdl.extract_info, url=search, download=False)
+                    data = await loop.run_in_executor(None, to_run)
+                                         
+                    if 'entries' in data:
+                        data = data['entries'][0]
+
+                    await ctx.send(f'```ini\n[{data["title"]} をQueueに追加したの]\n```')
+                    
+                    await player.queue.put(SiteTypeClass(data["title"], ctx.author, search, "youtube"))
         except Exception as e:
             await ctx.send(f"多分なんかエラー起きたの```{str(e)}```")
         
