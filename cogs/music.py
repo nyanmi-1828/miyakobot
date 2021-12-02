@@ -103,8 +103,6 @@ class MusicPlayer:
                 self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
                                                         f' `{source.requester}` のリクエストなの')
                 await self.next.wait()
-                source.cleanup()
-                self.current = None
             elif source.site_type == "niconico":
                 url = source.web_url
                 async with NicoNicoVideoAsync(url) as nico:
@@ -117,8 +115,6 @@ class MusicPlayer:
                     self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
                                                         f' `{source.requester}` のリクエストなの')
                     await self.next.wait()
-                    source.cleanup()
-                    self.current = None
             elif source.site_type == "youtube":
                 with YoutubeDL(ytdl_format_options) as ytdl:
                     youtube_url = source.web_url
@@ -145,8 +141,9 @@ class MusicPlayer:
                     self.np = await self._channel.send(f'今流している曲なの: `{source.title}`'
                                                    f' `{source.requester}` のリクエストなの')
                     await self.next.wait()
-                    source.cleanup()
-                    self.current = None
+                    
+            source.cleanup()
+            self.current = None
 
     async def destroy(self, guild: discord.Guild):
         if guild.voice_client:
@@ -436,6 +433,11 @@ class Music(commands.Cog):
             return
 
         self.del_player(ctx)
+        
+        if vc.is_playing() or not player.queue.empty():
+            while not player.queue.empty():
+                vc.stop()
+                break
             
         ffmpeg_audio_source = discord.FFmpegPCMAudio('./mp3/disconnect.mp3')
         next_ = asyncio.Event()
