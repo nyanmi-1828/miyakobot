@@ -96,4 +96,4 @@ Twitter: @nyanmi_23<br>
 他ゲームのDMでも反応できます。<br>
 osu!: nyanmi-1828
 ## 権利表記
-このbotに使用されている画像、ロゴなどは全て©️Cygames inc.に帰属します。
+このbotに使用されている画像、ロゴなどの権利は全て©️Cygames inc.に帰属します。
