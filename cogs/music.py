@@ -1,4 +1,5 @@
 import discord
+from discord import player
 from discord.ext import commands
 import asyncio
 import sys
@@ -432,13 +433,15 @@ class Music(commands.Cog):
             await ctx.send("ミヤコはこのサーバーのボイスチャンネルに参加してないの！")
             return
 
-        self.del_player(ctx)
+        player = self.get_player(ctx)
         
         if vc.is_playing() or not player.queue.empty():
             while not player.queue.empty():
                 vc.stop()
                 break
             
+        self.del_player(ctx)
+
         ffmpeg_audio_source = discord.FFmpegPCMAudio('./mp3/disconnect.mp3')
         next_ = asyncio.Event()
         next_.clear()
